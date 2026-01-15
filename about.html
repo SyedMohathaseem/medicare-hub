@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About MediCare Hub - Your trusted partner for medicine delivery from verified local medical stores in Pernambut.">
+  <title>About Us - MediCare Hub</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💊</text></svg>">
+  
+  <style>
+    .about-hero {
+      text-align: center;
+      padding: 3rem 0;
+    }
+    
+    .about-hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+    
+    .about-hero p {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .about-section {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+    
+    .about-section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .about-section h2 span {
+      font-size: 1.75rem;
+    }
+    
+    .about-section p {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+    
+    .about-section p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .feature-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    
+    .feature-card .icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .feature-card h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .feature-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+    
+    .how-it-works {
+      counter-reset: step;
+    }
+    
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .step:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    
+    .step-number {
+      counter-increment: step;
+      background: var(--primary);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    
+    .step-number::before {
+      content: counter(step);
+    }
+    
+    .step-content h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    
+    .step-content p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+    
+    .contact-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+    }
+    
+    .contact-item .icon {
+      font-size: 1.5rem;
+    }
+    
+    .contact-item span {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      transition: color 0.2s;
+    }
+    
+    .back-btn:hover {
+      color: var(--primary);
+    }
+    
+    .cta-section {
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+      border-radius: var(--radius-lg);
+      margin-top: 1.5rem;
+    }
+    
+    .cta-section h2 {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cta-section p {
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1.5rem;
+    }
+    
+    .cta-section .btn {
+      background: white;
+      color: var(--primary);
+    }
+    
+    .cta-section .btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            <path d="M12 5v14"/>
+            <path d="M5 12h14"/>
+          </svg>
+        </div>
+        <span class="logo-text">MediCare Hub</span>
+      </a>
+      
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <a href="index.html" class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span class="hide-mobile">Home</span>
+        </a>
+
+        <a href="about.html" class="nav-link active">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+          </svg>
+          <span class="hide-mobile">About</span>
+        </a>
+        
+        <a href="contact.html" class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <span class="hide-mobile">Contact</span>
+        </a>
+        
+        <a href="#" class="nav-link" onclick="showUserNotifications(); return false;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="hide-mobile">Alerts</span>
+          <span id="userNotiBadge" class="notification-badge" style="display: none;">0</span>
+        </a>
+        
+        <!-- Login/Profile Link -->
+        <div id="authNav">
+          <a href="login.html" class="nav-link" id="loginLink">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+            <span class="hide-mobile">Login</span>
+          </a>
+          
+          <div id="userProfile" style="display: none; position: relative;">
+            <button class="nav-link" onclick="toggleProfileMenu()" style="background: none; border: none; cursor: pointer;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M20 21a8 8 0 0 0-16 0"/>
+              </svg>
+              <span class="hide-mobile" id="userName">User</span>
+            </button>
+            <div id="profileMenu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); padding: 8px; min-width: 150px; z-index: 100;">
+              <div style="padding: 8px 12px; color: #6b7280; font-size: 12px; border-bottom: 1px solid #e5e7eb;">Logged in as</div>
+              <div style="padding: 8px 12px; font-weight: 600; color: #1f2937; font-size: 14px;" id="userPhoneDisplay"></div>
+              <button onclick="handleLogout()" style="width: 100%; padding: 10px 12px; background: #fee2e2; color: #dc2626; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; margin-top: 4px; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <a href="index.html" class="back-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+      Back to Home
+    </a>
+    
+    <!-- Hero Section -->
+    <section class="about-hero">
+      <h1>💊 About MediCare Hub</h1>
+      <p>Your trusted partner for quick and reliable medicine delivery from verified local medical stores in Pernambut.</p>
+    </section>
+
+    <!-- Who We Are -->
+    <section class="about-section">
+      <h2><span>🏥</span> Who We Are</h2>
+      <p>MediCare Hub is a digital platform that connects customers with trusted local medical stores in Pernambut. We believe that getting your medicines should be simple, quick, and hassle-free.</p>
+      <p>Our platform bridges the gap between you and your neighborhood pharmacy, enabling you to order medicines from the comfort of your home and get them delivered right to your doorstep — all for <strong>free</strong>!</p>
+    </section>
+
+    <!-- Our Mission -->
+    <section class="about-section">
+      <h2><span>🎯</span> Our Mission</h2>
+      <p>To make healthcare accessible to everyone in Pernambut by providing a seamless medicine ordering experience. We aim to save your time and effort while ensuring you receive genuine medicines from verified local stores.</p>
+    </section>
+
+    <!-- Features -->
+    <section class="about-section">
+      <h2><span>✨</span> Why Choose Us</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon">🚚</div>
+          <h3>Free Delivery</h3>
+          <p>Get your medicines delivered to your doorstep at no extra cost</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">✅</div>
+          <h3>Verified Stores</h3>
+          <p>All our partner stores are trusted and verified local pharmacies</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">💰</div>
+          <h3>Same Price</h3>
+          <p>Pay the same price as you would at the store — no hidden charges</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">⚡</div>
+          <h3>Quick Response</h3>
+          <p>Get instant confirmation via WhatsApp with quick updates</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="about-section">
+      <h2><span>📋</span> How It Works</h2>
+      <div class="how-it-works">
+        <div class="step">
+          <div class="step-number"></div>
+          <div class="step-content">
+            <h3>Select a Store</h3>
+            <p>Choose from our list of verified medical stores in Pernambut</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number"></div>
+          <div class="step-content">
+            <h3>Upload Prescription</h3>
+            <p>Take a photo of your prescription or medicine list and upload it</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number"></div>
+          <div class="step-content">
+            <h3>Confirm via WhatsApp</h3>
+            <p>Your order is sent to the store via WhatsApp for quick processing</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number"></div>
+          <div class="step-content">
+            <h3>Get Delivery</h3>
+            <p>Receive your medicines at your doorstep and pay on delivery</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Partner Stores -->
+    <section class="about-section">
+      <h2><span>🤝</span> Our Partner Stores</h2>
+      <p>We are proud to partner with trusted medical stores in Pernambut:</p>
+      <ul style="color: var(--text-secondary); line-height: 2; padding-left: 1.5rem; margin-top: 1rem;">
+        <li><strong>Raja Medicals</strong> – High Road, Pernambut</li>
+        <li><strong>Royal Pharmacy</strong> – Pernambut</li>
+        <li><strong>Alaghu Pharmacy</strong> – Achari Street, Pernambut</li>
+        <li><strong>Bharath Medicals</strong> – Veerasamy Street, Pernambut</li>
+        <li><strong>Zakir Medicals</strong> – High Road, Pernambut</li>
+        <li><strong>Nobel Medicals</strong> – High Road, Pernambut</li>
+        <li><strong>Shifa Health Solution</strong> – High Road, Pernambut</li>
+        <li><strong>Vaseem Medical Shop</strong> – High Road, Pernambut</li>
+      </ul>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <h2>Ready to Order?</h2>
+      <p>Start ordering your medicines now with free home delivery!</p>
+      <a href="index.html" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/>
+          <path d="m12 5 7 7-7 7"/>
+        </svg>
+        Order Now
+      </a>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-logo">
+        <span style="font-size: 28px;">💊</span>
+        <span class="sidebar-logo-text">MediCare Hub</span>
+      </div>
+      <p class="footer-text">© 2026 MediCare Hub. Your trusted medical partner.</p>
+      <p class="footer-text" style="margin-top: 8px;">
+        <a href="admin/login.html" style="color: var(--gray-500); text-decoration: underline;">Admin Panel</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function openMobileProfile() {
+      const user = MediCareData.getLoggedInUser();
+      if (user) {
+        document.getElementById('mobileProfileName').textContent = user.name;
+        document.getElementById('mobileProfilePhone').textContent = user.phone;
+      }
+      document.getElementById('mobileProfileModal').classList.add('show');
+    }
+
+    function updateAuthNav() {
+      const user = MediCareData.getLoggedInUser();
+      const loginLink = document.getElementById('loginLink');
+      const userProfile = document.getElementById('userProfile');
+      
+      const mobileProfileLink = document.getElementById('mobileProfileLink');
+      const mobileProfileName = document.getElementById('mobileProfileName');
+      const mobileProfilePhone = document.getElementById('mobileProfilePhone');
+      
+      if (user) {
+        // Desktop
+        if (loginLink) loginLink.style.display = 'none';
+        if (userProfile) userProfile.style.display = 'block';
+        if (document.getElementById('userName')) document.getElementById('userName').textContent = user.name.split(' ')[0];
+        if (document.getElementById('userPhoneDisplay')) document.getElementById('userPhoneDisplay').textContent = user.phone;
+        
+        // Mobile Visuals ONLY
+        if(mobileProfileLink) {
+           mobileProfileLink.querySelector('.icon').innerHTML = `
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+               <circle cx="12" cy="7" r="4"/>
+             </svg>`;
+           mobileProfileLink.querySelector('span').textContent = 'Profile';
+           
+           if(mobileProfileName) mobileProfileName.textContent = user.name;
+           if(mobileProfilePhone) mobileProfilePhone.textContent = user.phone;
+        }
+      } else {
+        // Desktop
+        if (loginLink) loginLink.style.display = 'flex';
+        if (userProfile) userProfile.style.display = 'none';
+        
+        // Mobile Visuals ONLY
+        if(mobileProfileLink) {
+           mobileProfileLink.querySelector('.icon').innerHTML = `
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+               <polyline points="10 17 15 12 10 7"/>
+               <line x1="15" y1="12" x2="3" y2="12"/>
+             </svg>`;
+           mobileProfileLink.querySelector('span').textContent = 'Login';
+        }
+      }
+    }document.addEventListener('click', function(e) {
+      const profileMenu = document.getElementById('profileMenu');
+      const userProfile = document.getElementById('userProfile');
+      if (profileMenu && !userProfile.contains(e.target)) {
+        profileMenu.style.display = 'none';
+      }
+    });
+    
+    function toggleProfileMenu() {
+      const menu = document.getElementById('profileMenu');
+      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleLogout() {
+      MediCareData.logoutUser();
+      window.location.reload();
+    }
+    
+    document.addEventListener('click', function(e) {
+      const profileMenu = document.getElementById('profileMenu');
+      const userProfile = document.getElementById('userProfile');
+      if (profileMenu && !userProfile.contains(e.target)) {
+        profileMenu.style.display = 'none';
+      }
+    });
+    
+    document.addEventListener('DOMContentLoaded', updateAuthNav);
+  </script>
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
+    <a href="index.html" class="bottom-nav-item">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <span>Home</span>
+    </a>
+    
+    <a href="index.html#search-focus" class="bottom-nav-item">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <span>Search</span>
+    </a>
+    
+    <a href="#" class="bottom-nav-item" onclick="showUserNotifications(); return false;">
+      <div class="icon" style="position: relative;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span id="mobileNotiBadge" class="notification-badge mobile-badge" style="display: none;">0</span>
+      </div>
+      <span>Notifications</span>
+    </a>
+    
+    <a href="login.html" class="bottom-nav-item">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <script>
+    // Mobile Bottom Nav Active State
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentPath = window.location.pathname;
+      const navItems = document.querySelectorAll('.bottom-nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (currentPath.includes(href) && href !== '#' && href !== 'index.html#stores') {
+          navItems.forEach(nav => nav.classList.remove('active'));
+          item.classList.add('active');
+        }
+      });
+      
+      // Sync badges
+      const desktopBadge = document.getElementById('userNotiBadge');
+      const mobileBadge = document.getElementById('mobileNotiBadge');
+      
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' || mutation.type === 'childList') {
+             mobileBadge.textContent = desktopBadge.textContent;
+             mobileBadge.style.display = desktopBadge.style.display;
+          }
+        });
+      });
+      
+      if(desktopBadge) {
+        observer.observe(desktopBadge, { attributes: true, childList: true, subtree: true });
+      }
+    });
+  </script>
+</body>
+</html>

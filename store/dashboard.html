@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Store Dashboard - MediCare Hub">
+  <title>Store Dashboard - MediCare Hub</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/styles.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💊</text></svg>">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon" style="width: 40px; height: 40px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          </svg>
+        </div>
+        <span class="sidebar-logo-text">MediCare Hub</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link active">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9"/>
+            <rect x="14" y="3" width="7" height="5"/>
+            <rect x="14" y="12" width="7" height="9"/>
+            <rect x="3" y="16" width="7" height="5"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="#" class="sidebar-link" onclick="MediCareData.logout(); window.location.href='login.html';">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Logout
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+      <!-- Mobile Header -->
+      <div class="show-mobile" style="margin-bottom: var(--space-4);">
+        <div class="flex items-center justify-between">
+          <h2 style="font-size: var(--font-size-xl);">🏥 Store Dashboard</h2>
+          <button class="btn btn-secondary" style="padding: var(--space-2) var(--space-3); min-height: auto;" onclick="MediCareData.logout(); window.location.href='login.html';">
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title" id="storeName">Store Dashboard</h1>
+          <p style="color: var(--gray-500);">Manage your orders and deliveries</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <!-- Notification Icon -->
+          <div style="position: relative; cursor: pointer;" onclick="showNotifications()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--gray-600);">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span id="storeNotiBadge" class="notification-badge" style="display: none;"></span>
+          </div>
+
+          <button class="btn btn-primary" onclick="location.reload()" style="width: auto; padding: 10px 24px; min-height: 44px; font-size: 16px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+              <path d="M16 16h5v5"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="stat-value" id="pendingCount">0</div>
+          <div class="stat-label">Pending Orders</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 12 2 2 4-4"/>
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+          </div>
+          <div class="stat-value" id="acceptedCount">0</div>
+          <div class="stat-label">Accepted</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div class="stat-value" id="deliveredCount">0</div>
+          <div class="stat-label">Delivered</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </div>
+          <div class="stat-value" id="totalCount">0</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+      </div>
+
+      <!-- Orders Table -->
+      <div class="orders-table">
+        <div class="table-header">
+          <h3 class="table-title">Recent Orders</h3>
+        </div>
+        
+        <div class="table-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Image</th>
+                <th>Type</th>
+                <th>Customer</th>
+                <th>AI Hint</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Orders will be dynamically loaded -->
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Empty State -->
+        <div id="emptyState" class="text-center p-6" style="display: none;">
+          <div style="width: 80px; height: 80px; margin: 0 auto; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px;">
+            📦
+          </div>
+          <h4 style="margin-top: var(--space-4); color: var(--gray-700);">No orders yet</h4>
+          <p style="color: var(--gray-500);">Orders will appear here when customers place them</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Image Preview Modal -->
+  <div class="modal-overlay" id="imageModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Order Image</h3>
+        <button class="modal-close" onclick="closeImageModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img id="modalImage" src="" alt="Order Image" style="width: 100%; border-radius: var(--radius-lg);">
+        <div id="orderNote" class="mt-4" style="display: none;">
+          <p style="color: var(--gray-500); font-size: var(--font-size-sm);">Customer Note:</p>
+          <p id="noteText" style="color: var(--gray-700);"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reject Modal -->
+  <div class="modal-overlay" id="rejectModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Reject Order</h3>
+        <button class="modal-close" onclick="closeRejectModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: var(--space-4);">Please select a reason for rejection:</p>
+        
+        <div class="form-group">
+          <select class="form-select" id="rejectReason">
+            <option value="">Select a reason</option>
+            <option value="Image not clear">Image not clear</option>
+            <option value="Prescription expired">Prescription expired</option>
+            <option value="Medicine out of stock">Medicine out of stock</option>
+            <option value="Invalid prescription">Invalid prescription</option>
+            <option value="Delivery area not serviceable">Delivery area not serviceable</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        
+        <input type="hidden" id="rejectOrderId">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeRejectModal()">Cancel</button>
+        <button class="btn btn-primary" style="background: var(--error);" onclick="confirmReject()">Reject Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/store-dashboard.js"></script>
+</body>
+</html>

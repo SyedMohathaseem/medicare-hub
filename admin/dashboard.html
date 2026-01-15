@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Super Admin Dashboard - MediCare Hub">
+  <title>Admin Dashboard - MediCare Hub</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/styles.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💊</text></svg>">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon" style="width: 40px; height: 40px; background: var(--accent-gradient);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+          </svg>
+        </div>
+        <span class="sidebar-logo-text">Admin Panel</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link active">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9"/>
+            <rect x="14" y="3" width="7" height="5"/>
+            <rect x="14" y="12" width="7" height="9"/>
+            <rect x="3" y="16" width="7" height="5"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="#stores" class="sidebar-link" onclick="showSection('stores')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          </svg>
+          Manage Stores
+        </a>
+        <a href="#orders" class="sidebar-link" onclick="showSection('orders')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+          </svg>
+          All Orders
+        </a>
+        <a href="#" class="sidebar-link" onclick="MediCareData.logout(); window.location.href='login.html';">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Logout
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+      <!-- Mobile Header -->
+      <div class="show-mobile" style="margin-bottom: var(--space-4);">
+        <div class="flex items-center justify-between">
+          <h2 style="font-size: var(--font-size-xl);">🛡️ Admin Panel</h2>
+          <button class="btn btn-secondary" style="padding: var(--space-2) var(--space-3); min-height: auto;" onclick="MediCareData.logout(); window.location.href='login.html';">
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">Super Admin Dashboard</h1>
+          <p style="color: var(--gray-500);">Platform overview and management</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <!-- Notification Icon -->
+          <div style="position: relative; cursor: pointer;" onclick="showNotifications()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--gray-600);">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span id="notiBadge" class="notification-badge" style="display: none;"></span>
+          </div>
+          
+          <button class="btn btn-primary" onclick="location.reload()" style="width: auto; padding: 10px 24px; min-height: 44px; font-size: 16px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            </svg>
+          </div>
+          <div class="stat-value" id="totalStores">0</div>
+          <div class="stat-label">Total Stores</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="stat-value" id="verifiedStores">0</div>
+          <div class="stat-label">Verified Stores</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </div>
+          <div class="stat-value" id="totalOrders">0</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+          </div>
+          <div class="stat-value" id="rejectedOrders">0</div>
+          <div class="stat-label">Rejected Orders</div>
+        </div>
+      </div>
+
+      <!-- Quick Stats Row -->
+      <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+        <div class="stat-card" style="text-align: center;">
+          <div class="stat-value" id="pendingOrders" style="color: var(--warning);">0</div>
+          <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card" style="text-align: center;">
+          <div class="stat-value" id="acceptedOrders" style="color: var(--primary);">0</div>
+          <div class="stat-label">Accepted</div>
+        </div>
+        <div class="stat-card" style="text-align: center;">
+          <div class="stat-value" id="deliveredOrders" style="color: var(--success);">0</div>
+          <div class="stat-label">Delivered</div>
+        </div>
+        <div class="stat-card" style="text-align: center;">
+          <div class="stat-value" id="activeStores" style="color: var(--secondary);">0</div>
+          <div class="stat-label">Active Stores</div>
+        </div>
+      </div>
+ 
+      <!-- Stores Management Section -->
+      <div id="storesSection" class="orders-table mt-6">
+        <div class="table-header">
+          <h3 class="table-title">Medical Stores</h3>
+          <button class="btn btn-primary" style="padding: var(--space-2) var(--space-4); min-height: auto; width: auto;" onclick="openAddStoreModal()">
+            + Add Store
+          </button>
+        </div>
+        
+        <div class="table-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Store Name</th>
+                <th>Area</th>
+                <th>Revenue</th>
+                <th>Status</th>
+                <th>Verified</th>
+                <th>Delivering Today</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="storesTableBody">
+              <!-- Stores will be dynamically loaded -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Orders Section -->
+      <div id="ordersSection" class="orders-table mt-6">
+        <div class="table-header">
+          <h3 class="table-title">All Orders</h3>
+        </div>
+        
+        <div class="table-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Store</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Rejection Reason</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Orders will be dynamically loaded -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div id="emptyOrdersState" class="text-center p-6" style="display: none;">
+          <p style="color: var(--gray-500);">No orders in the system yet</p>
+        </div>
+      </div>
+
+      <!-- Rejection Reasons Analytics -->
+      <div class="orders-table mt-6">
+        <div class="table-header">
+          <h3 class="table-title">Rejection Reasons Analysis</h3>
+        </div>
+        <div class="p-6" id="rejectionAnalytics">
+          <p style="color: var(--gray-500);">No rejection data available yet</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Store Modal -->
+  <div class="modal-overlay" id="addStoreModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Add New Store</h3>
+        <button class="modal-close" onclick="closeAddStoreModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="addStoreForm">
+          <div class="form-group">
+            <label class="form-label" for="storeName">Store Name</label>
+            <input type="text" class="form-input" id="newStoreName" placeholder="e.g., ABC Pharmacy" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="storeArea">Area / Locality</label>
+            <input type="text" class="form-input" id="newStoreArea" placeholder="e.g., Koramangala" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="storeWhatsapp">WhatsApp Number</label>
+            <input type="text" class="form-input" id="newStoreWhatsapp" placeholder="e.g., 919876543210" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAddStoreModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addNewStore()">Add Store</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

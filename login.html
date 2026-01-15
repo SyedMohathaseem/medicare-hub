@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Login - MediCare Hub">
+  <title>Login - MediCare Hub</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💊</text></svg>">
+  
+  <style>
+    .login-container {
+      min-height: calc(100vh - 200px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 0;
+    }
+    
+    .login-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 2.5rem;
+      max-width: 480px;
+      width: 100%;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .login-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #e0f2fe 0%, #ddd6fe 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+    
+    .login-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 1rem;
+    }
+    
+    .login-header p {
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    
+    /* Role Tabs */
+    .role-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      background: var(--bg-secondary);
+      padding: 0.375rem;
+      border-radius: 12px;
+    }
+    
+    .role-tab {
+      flex: 1;
+      padding: 0.75rem 0.5rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .role-tab:hover {
+      color: var(--text-primary);
+    }
+    
+    .role-tab.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .role-tab .icon {
+      font-size: 1.25rem;
+    }
+    
+    /* Auth Tabs (Login/Signup) */
+    .auth-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+    
+    .auth-tab {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.3s ease;
+    }
+    
+    .auth-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 2px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #ffffff;
+      color: #1f2937;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+    }
+    
+    .form-group input::placeholder {
+      color: #9ca3af;
+    }
+    
+    /* Password Input with Toggle */
+    .password-wrapper {
+      position: relative;
+    }
+    
+    .password-wrapper input {
+      padding-right: 48px;
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+    
+    .password-toggle:hover {
+      color: #6366f1;
+    }
+    
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+      margin-top: 0.5rem;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+    
+    /* Messages */
+    .message {
+      display: none;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .message.show {
+      display: flex;
+    }
+    
+    .message.error {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+    }
+    
+    .message.success {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #16a34a;
+    }
+    
+    /* Credentials Info */
+    .credentials-info {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .credentials-info p {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .credentials-info .creds {
+      background: var(--bg-secondary);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+    }
+    
+    .credentials-info .creds strong {
+      color: var(--primary);
+    }
+    
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-top: 1.5rem;
+      transition: color 0.2s;
+    }
+    
+    .back-link:hover {
+      color: var(--primary);
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            <path d="M12 5v14"/>
+            <path d="M5 12h14"/>
+          </svg>
+        </div>
+        <span class="logo-text">MediCare Hub</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-icon">🔐</div>
+        <h1>Welcome to MediCare Hub</h1>
+        <p>Sign in or create account</p>
+      </div>
+      
+      <!-- Role Tabs -->
+      <div class="role-tabs">
+        <button class="role-tab active" data-role="user" onclick="selectRole('user')">
+          <span class="icon">👤</span>
+          <span>User</span>
+        </button>
+        <button class="role-tab" data-role="store" onclick="selectRole('store')">
+          <span class="icon">🏥</span>
+          <span>Store</span>
+        </button>
+        <button class="role-tab" data-role="admin" onclick="selectRole('admin')">
+          <span class="icon">👑</span>
+          <span>Admin</span>
+        </button>
+      </div>
+      
+      <!-- Auth Tabs (only for users) -->
+      <div class="auth-tabs" id="authTabs">
+        <button class="auth-tab active" data-auth="login" onclick="selectAuthTab('login')">Login</button>
+        <button class="auth-tab" data-auth="signup" onclick="selectAuthTab('signup')">Sign Up</button>
+      </div>
+      
+      <!-- Messages -->
+      <div class="message error" id="errorMessage"></div>
+      <div class="message success" id="successMessage"></div>
+      
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div class="form-group hidden" id="nameGroup">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="Enter your full name">
+        </div>
+        
+        <div class="form-group">
+          <label for="username" id="usernameLabel">Phone Number</label>
+          <input type="text" id="username" placeholder="Enter your phone number" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" placeholder="Enter your password" required>
+            <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="form-group hidden" id="confirmPasswordGroup">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="confirmPassword" placeholder="Confirm your password">
+            <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword', this)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          <span id="submitBtnText">Sign In</span>
+        </button>
+      </form>
+      
+      <!-- Credentials Info -->
+      <div class="credentials-info" id="credentialsInfo">
+        <p>Demo credentials:</p>
+        <div class="creds" id="credentialsText">
+          Register with your phone number to order medicines
+        </div>
+      </div>
+      
+      <div class="text-center">
+        <a href="index.html" class="back-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p class="footer-text">© 2026 MediCare Hub. Your trusted medical partner.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script>
+    // Check if already logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      // Small delay to ensure data.js is loaded
+      setTimeout(() => {
+        if (typeof MediCareData !== 'undefined') {
+          const user = MediCareData.getLoggedInUser();
+          const admin = MediCareData.getAdminLoggedIn();
+          const store = MediCareData.getLoggedInStore();
+          
+          if (user) {
+            window.location.replace('index.html');
+            return;
+          }
+          if (admin) {
+            window.location.replace('admin/dashboard.html');
+            return;
+          }
+          if (store) {
+            window.location.replace('store/dashboard.html');
+            return;
+          }
+        }
+      }, 50);
+    });
+
+    let currentRole = 'user';
+
+    let currentAuthTab = 'login';
+    
+    // Password visibility toggle
+    function togglePassword(inputId, button) {
+      const input = document.getElementById(inputId);
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      
+      // Change icon
+      const eyeOpen = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+      const eyeClosed = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+      
+      button.innerHTML = isPassword ? eyeClosed : eyeOpen;
+    }
+    
+    // Role credentials info
+    const roleCredentials = {
+      user: 'Register with your phone number to order medicines',
+      store: 'Username: <strong>rajamedicals</strong> | Password: <strong>store123</strong>',
+      admin: 'Username: <strong>admin</strong> | Password: <strong>admin123</strong>'
+    };
+    
+    function selectRole(role) {
+      currentRole = role;
+      
+      // Update active tab
+      document.querySelectorAll('.role-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelector(`[data-role="${role}"]`).classList.add('active');
+      
+      // Update credentials text
+      document.getElementById('credentialsText').innerHTML = roleCredentials[role];
+      
+      // Show/hide auth tabs based on role
+      const authTabs = document.getElementById('authTabs');
+      if (role === 'user') {
+        authTabs.style.display = 'flex';
+        selectAuthTab('login');
+      } else {
+        authTabs.style.display = 'none';
+        // Reset to login view for store/admin
+        document.getElementById('nameGroup').classList.add('hidden');
+        document.getElementById('confirmPasswordGroup').classList.add('hidden');
+        document.getElementById('usernameLabel').textContent = 'Username';
+        document.getElementById('username').placeholder = 'Enter your username';
+        document.getElementById('submitBtnText').textContent = 'Sign In';
+      }
+      
+      // Hide messages
+      hideMessages();
+    }
+    
+    function selectAuthTab(tab) {
+      currentAuthTab = tab;
+      
+      // Update active tab
+      document.querySelectorAll('.auth-tab').forEach(t => {
+        t.classList.remove('active');
+      });
+      document.querySelector(`[data-auth="${tab}"]`).classList.add('active');
+      
+      // Toggle form fields
+      const nameGroup = document.getElementById('nameGroup');
+      const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+      const submitBtnText = document.getElementById('submitBtnText');
+      const usernameLabel = document.getElementById('usernameLabel');
+      const usernameInput = document.getElementById('username');
+      
+      if (tab === 'signup') {
+        nameGroup.classList.remove('hidden');
+        confirmPasswordGroup.classList.remove('hidden');
+        submitBtnText.textContent = 'Create Account';
+        document.getElementById('name').required = true;
+        document.getElementById('confirmPassword').required = true;
+      } else {
+        nameGroup.classList.add('hidden');
+        confirmPasswordGroup.classList.add('hidden');
+        submitBtnText.textContent = 'Sign In';
+        document.getElementById('name').required = false;
+        document.getElementById('confirmPassword').required = false;
+      }
+      
+      usernameLabel.textContent = 'Phone Number';
+      usernameInput.placeholder = 'Enter your phone number';
+      
+      // Hide messages
+      hideMessages();
+    }
+    
+    function showError(message) {
+      const errorEl = document.getElementById('errorMessage');
+      errorEl.textContent = '❌ ' + message;
+      errorEl.classList.add('show');
+      setTimeout(() => errorEl.classList.remove('show'), 4000);
+    }
+    
+    function showSuccess(message) {
+      const successEl = document.getElementById('successMessage');
+      successEl.textContent = '✅ ' + message;
+      successEl.classList.add('show');
+    }
+    
+    function hideMessages() {
+      document.getElementById('errorMessage').classList.remove('show');
+      document.getElementById('successMessage').classList.remove('show');
+    }
+    
+    // Redirect after login - check if user was trying to select a store
+    function redirectAfterLogin() {
+      const redirectStore = sessionStorage.getItem('medicare_redirect_store');
+      if (redirectStore) {
+        sessionStorage.removeItem('medicare_redirect_store');
+        MediCareData.setCurrentStore(redirectStore);
+        window.location.href = `store.html?id=${redirectStore}`;
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+    
+    // Handle form submission
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      hideMessages();
+      
+      console.log('Login attempt:', currentRole);
+      
+      if (typeof MediCareData === 'undefined') {
+        showError('System error: Data module not loaded');
+        return;
+      }
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      
+      try {
+        // USER LOGIN/SIGNUP
+        if (currentRole === 'user') {
+          if (currentAuthTab === 'signup') {
+            // Sign Up
+            const name = document.getElementById('name').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!name) {
+              showError('Please enter your full name');
+              return;
+            }
+            
+            if (username.length < 10) {
+              showError('Please enter a valid phone number');
+              return;
+            }
+            
+            if (password.length < 4) {
+              showError('Password must be at least 4 characters');
+              return;
+            }
+            
+            if (password !== confirmPassword) {
+              showError('Passwords do not match');
+              return;
+            }
+            
+            // Register user
+            const result = MediCareData.registerUser({
+              name: name,
+              phone: username,
+              password: password
+            });
+            
+            if (result.success) {
+              showSuccess('Account created! Redirecting...');
+              MediCareData.setLoggedInUser(result.user.id);
+              setTimeout(() => {
+                redirectAfterLogin();
+              }, 1500);
+            } else {
+              showError(result.error);
+            }
+          } else {
+            // Login
+            const user = MediCareData.validateUserLogin(username, password);
+            if (user) {
+              MediCareData.setLoggedInUser(user.id);
+              showSuccess('Login successful! Redirecting...');
+              setTimeout(() => {
+                redirectAfterLogin();
+              }, 1000);
+            } else {
+              // Detailed error checking
+              const existingUser = MediCareData.getUserByPhone(username);
+              if (existingUser) {
+                 showError('Incorrect password. Please try again.');
+              } else {
+                 showError('Account not found. Please Sign Up first.');
+              }
+            }
+          }
+          return;
+        }
+        
+        // STORE LOGIN
+        if (currentRole === 'store') {
+          console.log('Attempting store login:', username);
+          const storeAuth = MediCareData.validateStoreLogin(username, password);
+          if (storeAuth) {
+            console.log('Store login success:', storeAuth);
+            MediCareData.setLoggedInStore(storeAuth.storeId);
+            showSuccess('Login successful! Redirecting...');
+            setTimeout(() => {
+              window.location.href = 'store/dashboard.html';
+            }, 1000);
+          } else {
+            console.log('Store login failed');
+            showError('Invalid store credentials');
+          }
+          return;
+        }
+        
+        // ADMIN LOGIN
+        if (currentRole === 'admin') {
+          console.log('Attempting admin login:', username);
+          if (MediCareData.validateAdminLogin(username, password)) {
+            console.log('Admin login success');
+            MediCareData.setAdminLoggedIn(true);
+            showSuccess('Login successful! Redirecting...');
+            setTimeout(() => {
+              window.location.href = 'admin/dashboard.html';
+            }, 1000);
+          } else {
+            console.log('Admin login failed');
+            showError('Invalid admin credentials');
+          }
+          return;
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        showError('An error occurred during login. Please try again.');
+      }
+    });
+  </script>
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
+    <a href="index.html" class="bottom-nav-item">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <span>Home</span>
+    </a>
+    
+    <a href="index.html#search-focus" class="bottom-nav-item">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <span>Search</span>
+    </a>
+    
+    <a href="#" class="bottom-nav-item" onclick="showUserNotifications(); return false;">
+      <div class="icon" style="position: relative;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span id="mobileNotiBadge" class="notification-badge mobile-badge" style="display: none;">0</span>
+      </div>
+      <span>Notifications</span>
+    </a>
+    
+    <a href="javascript:void(0)" class="bottom-nav-item" id="mobileProfileLink" onclick="handleMobileProfileClick(event)">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <!-- Mobile Profile Modal -->
+  <div id="mobileProfileModal" class="mobile-profile-modal">
+    <div class="mobile-profile-content">
+      <div class="profile-avatar-large">👤</div>
+      <div class="mobile-profile-header">
+        <h3 id="mobileProfileName">User Name</h3>
+        <p id="mobileProfilePhone">Phone Number</p>
+      </div>
+      <div class="mobile-profile-actions">
+        <button onclick="handleLogout()" style="width: 100%; padding: 14px; background: #fee2e2; color: #dc2626; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer;">
+          Logout
+        </button>
+        <button onclick="closeMobileProfile()" style="width: 100%; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openMobileProfile() {
+      const user = MediCareData.getLoggedInUser();
+      if (user) {
+        document.getElementById('mobileProfileName').textContent = user.name;
+        document.getElementById('mobileProfilePhone').textContent = user.phone;
+      }
+      document.getElementById('mobileProfileModal').classList.add('show');
+    }
+
+    function closeMobileProfile() {
+      document.getElementById('mobileProfileModal').classList.remove('show');
+    }
+
+    // Robust Click Handler
+    function handleMobileProfileClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const user = MediCareData.getLoggedInUser();
+      
+      if (user) {
+        openMobileProfile();
+      } else {
+        window.location.href = 'login.html';
+      }
+      return false;
+    }
+
+    // Close modal when clicking outside content
+    document.getElementById('mobileProfileModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeMobileProfile();
+      }
+    });
+
+    function updateAuthNav() {
+      const user = MediCareData.getLoggedInUser();
+      
+      const mobileProfileLink = document.getElementById('mobileProfileLink');
+      const mobileProfileName = document.getElementById('mobileProfileName');
+      const mobileProfilePhone = document.getElementById('mobileProfilePhone');
+      
+      if (user) {
+        // Mobile Visuals ONLY
+        if(mobileProfileLink) {
+           mobileProfileLink.querySelector('.icon').innerHTML = `
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+               <circle cx="12" cy="7" r="4"/>
+             </svg>`;
+           mobileProfileLink.querySelector('span').textContent = 'Profile';
+           
+           if(mobileProfileName) mobileProfileName.textContent = user.name;
+           if(mobileProfilePhone) mobileProfilePhone.textContent = user.phone;
+        }
+      } else {
+        // Mobile Visuals ONLY
+        if(mobileProfileLink) {
+           mobileProfileLink.querySelector('.icon').innerHTML = `
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+               <polyline points="10 17 15 12 10 7"/>
+               <line x1="15" y1="12" x2="3" y2="12"/>
+             </svg>`;
+           mobileProfileLink.querySelector('span').textContent = 'Login';
+        }
+      }
+    }
+
+    function handleLogout() {
+      MediCareData.logoutUser();
+      window.location.reload();
+    }
+
+    // Mobile Bottom Nav Active State
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAuthNav(); // Check on load
+      // ... existing code
+
+      const currentPath = window.location.pathname;
+      const navItems = document.querySelectorAll('.bottom-nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (currentPath.includes(href) && href !== '#' && href !== 'index.html#stores') {
+          navItems.forEach(nav => nav.classList.remove('active'));
+          item.classList.add('active');
+        }
+      });
+      
+      // Sync badges
+      const desktopBadge = document.getElementById('userNotiBadge');
+      const mobileBadge = document.getElementById('mobileNotiBadge');
+      
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' || mutation.type === 'childList') {
+             mobileBadge.textContent = desktopBadge ? desktopBadge.textContent : '0';
+             mobileBadge.style.display = desktopBadge ? desktopBadge.style.display : 'none';
+          }
+        });
+      });
+      
+      if(desktopBadge) {
+        observer.observe(desktopBadge, { attributes: true, childList: true, subtree: true });
+      }
+    });
+  </script>
+</body>

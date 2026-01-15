@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Upload prescription or medicine photo to order from your selected medical store.">
+  <title>Upload & Order - MediCare Hub</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💊</text></svg>">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            <path d="M12 5v14"/>
+            <path d="M5 12h14"/>
+          </svg>
+        </div>
+        <span class="logo-text">MediCare Hub</span>
+      </a>
+      
+      <a href="index.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 19-7-7 7-7"/>
+          <path d="M19 12H5"/>
+        </svg>
+        <span>Change Store</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Store Detail Header -->
+    <section class="store-detail-header" id="storeHeader">
+      <div class="store-detail-icon">🏥</div>
+      <div class="store-detail-info">
+        <h1 class="store-detail-name" id="storeName">Loading...</h1>
+        <div class="store-detail-badges" id="storeBadges">
+          <!-- Badges will be added dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust Banner -->
+    <div class="trust-banner">
+      <div class="trust-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+      </div>
+      <p class="trust-text"><strong>Same in-store price & discount guaranteed</strong> — Cash on Delivery only</p>
+    </div>
+
+    <!-- Upload Section -->
+    <section class="upload-section">
+      <h2 class="page-title text-center">Upload Prescription or Medicine Photo</h2>
+      <p class="page-subtitle text-center">Take a clear photo of your prescription or the medicine you need</p>
+
+      <!-- Upload Card -->
+      <div class="upload-card" id="uploadCard">
+        <div class="upload-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <h3 class="upload-title">Tap to Upload Image</h3>
+        <p class="upload-subtitle">or drag and drop your file here</p>
+        <div class="upload-options">
+          <span class="upload-option">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            Camera
+          </span>
+          <span class="upload-option">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            Gallery
+          </span>
+        </div>
+        <input type="file" id="imageInput" accept="image/*" capture="environment" hidden>
+      </div>
+
+      <!-- Image Preview -->
+      <div class="upload-preview" id="uploadPreview">
+        <div class="preview-image">
+          <img id="previewImage" src="" alt="Uploaded image preview">
+        </div>
+        <button class="btn btn-secondary mt-4" id="changeImageBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+            <path d="M16 16h5v5"/>
+          </svg>
+          Change Image
+        </button>
+      </div>
+
+      <!-- AI Verification Messages -->
+      <div id="aiMessages"></div>
+
+      <!-- Phone Field -->
+      <div class="form-group mt-6" id="phoneSection" style="display: none;">
+        <label class="form-label" for="orderPhone">Phone Number <span style="color: var(--error);">*</span></label>
+        <input type="tel" class="form-input" id="orderPhone" placeholder="Enter your mobile number" style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 8px;">
+      </div>
+
+      <!-- Address Field -->
+      <div class="form-group mt-4" id="addressSection" style="display: none;">
+        <label class="form-label" for="orderAddress">Delivery Address <span style="color: var(--error);">*</span></label>
+        <textarea class="form-textarea" id="orderAddress" placeholder="Enter full delivery address (House No, Street, Area, City)..." rows="3"></textarea>
+      </div>
+
+      <!-- Note Field -->
+      <div class="form-group mt-4" id="noteSection" style="display: none;">
+        <label class="form-label" for="orderNote">Add a note (optional)</label>
+        <textarea class="form-textarea" id="orderNote" placeholder="E.g., Need 30 tablets, or any specific instructions..."></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons" id="actionButtons" style="display: none;">
+        <button class="btn btn-primary btn-lg" id="uploadBuyBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          UPLOAD & BUY
+        </button>
+        <button class="btn btn-secondary btn-lg" id="requestBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          REQUEST (Not Urgent)
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-logo">
+        <span style="font-size: 28px;">💊</span>
+        <span class="sidebar-logo-text">MediCare Hub</span>
+      </div>
+      <p class="footer-text">© 2026 MediCare Hub. Your trusted medical partner.</p>
+    </div>
+  </footer>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="loading-spinner"></div>
+    <p class="loading-text" id="loadingText">Processing your order...</p>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/upload.js"></script>
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
+    <a href="index.html" class="bottom-nav-item">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <span>Home</span>
+    </a>
+    
+    <a href="index.html#search-focus" class="bottom-nav-item">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <span>Search</span>
+    </a>
+    
+    <a href="#" class="bottom-nav-item" onclick="showUserNotifications(); return false;">
+      <div class="icon" style="position: relative;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span id="mobileNotiBadge" class="notification-badge mobile-badge" style="display: none;">0</span>
+      </div>
+      <span>Notifications</span>
+    </a>
+    
+    <a href="javascript:void(0)" class="bottom-nav-item" id="mobileProfileLink" onclick="handleMobileProfileClick(event)">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <!-- Mobile Profile Modal -->
+  <div id="mobileProfileModal" class="mobile-profile-modal">
+    <div class="mobile-profile-content">
+      <div class="profile-avatar-large">👤</div>
+      <div class="mobile-profile-header">
+        <h3 id="mobileProfileName">User Name</h3>
+        <p id="mobileProfilePhone">Phone Number</p>
+      </div>
+      <div class="mobile-profile-actions">
+        <button onclick="handleLogout()" style="width: 100%; padding: 14px; background: #fee2e2; color: #dc2626; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer;">
+          Logout
+        </button>
+        <button onclick="closeMobileProfile()" style="width: 100%; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openMobileProfile() {
+      const user = MediCareData.getLoggedInUser();
+      if (user) {
+        document.getElementById('mobileProfileName').textContent = user.name;
+        document.getElementById('mobileProfilePhone').textContent = user.phone;
+      }
+      document.getElementById('mobileProfileModal').classList.add('show');
+    }
+
+    function closeMobileProfile() {
+      document.getElementById('mobileProfileModal').classList.remove('show');
+    }
+
+    // Robust Click Handler
+    function handleMobileProfileClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const user = MediCareData.getLoggedInUser();
+      
+      if (user) {
+        openMobileProfile();
+      } else {
+        window.location.href = 'login.html';
+      }
+      return false;
+    }
+
+    // Close modal when clicking outside content
+    document.getElementById('mobileProfileModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeMobileProfile();
+      }
+    });
+
+    function updateAuthNav() {
+      const user = MediCareData.getLoggedInUser();
+      const loginLink = document.getElementById('loginLink');
+      const userProfile = document.getElementById('userProfile');
+      
+      const mobileProfileLink = document.getElementById('mobileProfileLink');
+      const mobileProfileName = document.getElementById('mobileProfileName');
+      const mobileProfilePhone = document.getElementById('mobileProfilePhone');
+      
+      if (user) {
+        // Desktop
+        if(loginLink) loginLink.style.display = 'none';
+        if(userProfile) userProfile.style.display = 'block';
+        if(document.getElementById('userName')) document.getElementById('userName').textContent = user.name.split(' ')[0];
+        if(document.getElementById('userPhoneDisplay')) document.getElementById('userPhoneDisplay').textContent = user.phone;
+        
+        // Mobile Visuals ONLY
+        if(mobileProfileLink) {
+           mobileProfileLink.querySelector('.icon').innerHTML = `
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+               <circle cx="12" cy="7" r="4"/>
+             </svg>`;
+           mobileProfileLink.querySelector('span').textContent = 'Profile';
+           
+           if(mobileProfileName) mobileProfileName.textContent = user.name;
+           if(mobileProfilePhone) mobileProfilePhone.textContent = user.phone;
+        }
+      } else {
+        // Desktop
+        if(loginLink) loginLink.style.display = 'flex';
+        if(userProfile) userProfile.style.display = 'none';
+        
+        // Mobile Visuals ONLY
+        if(mobileProfileLink) {
+           mobileProfileLink.querySelector('.icon').innerHTML = `
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+               <polyline points="10 17 15 12 10 7"/>
+               <line x1="15" y1="12" x2="3" y2="12"/>
+             </svg>`;
+           mobileProfileLink.querySelector('span').textContent = 'Login';
+        }
+      }
+    }
+
+    function handleLogout() {
+      MediCareData.logoutUser();
+      window.location.reload();
+    }
+
+    // Mobile Bottom Nav Active State
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAuthNav(); // Ensure this runs
+      // ... existing code
+
+      const currentPath = window.location.pathname;
+      const navItems = document.querySelectorAll('.bottom-nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (currentPath.includes(href) && href !== '#' && href !== 'index.html#stores') {
+          navItems.forEach(nav => nav.classList.remove('active'));
+          item.classList.add('active');
+        }
+      });
+      
+      // Sync badges
+      const desktopBadge = document.getElementById('userNotiBadge');
+      const mobileBadge = document.getElementById('mobileNotiBadge');
+      
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' || mutation.type === 'childList') {
+             mobileBadge.textContent = desktopBadge ? desktopBadge.textContent : '0';
+             mobileBadge.style.display = desktopBadge ? desktopBadge.style.display : 'none';
+          }
+        });
+      });
+      
+      if(desktopBadge) {
+        observer.observe(desktopBadge, { attributes: true, childList: true, subtree: true });
+      }
+    });
+  </script>
+</body>

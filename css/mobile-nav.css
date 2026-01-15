@@ -1,0 +1,85 @@
+/* ================================================
+   MOBILE BOTTOM NAVIGATION
+   ================================================ */
+.mobile-bottom-nav {
+    display: none;
+    /* Hidden by default (Desktop) */
+}
+
+@media (max-width: 768px) {
+
+    /* Hide standard header links on mobile */
+    .header-content>div:not(.logo) {
+        display: none !important;
+    }
+
+    /* Show Bottom Nav */
+    .mobile-bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 12px 16px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        z-index: 1000;
+    }
+
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        text-decoration: none;
+        color: #9ca3af;
+        /* Gray inactive */
+        transition: all 0.3s ease;
+    }
+
+    .bottom-nav-item .icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bottom-nav-item .icon svg {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2px;
+    }
+
+    .bottom-nav-item span {
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    /* Active State (Purple) */
+    .bottom-nav-item.active {
+        color: #8b5cf6;
+        /* Purple */
+    }
+
+    .bottom-nav-item.active .icon svg {
+        fill: currentColor;
+        /* Filled icon for active */
+        stroke: none;
+    }
+
+    /* Badge for Notification Icon */
+    .mobile-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        min-width: 16px;
+        height: 16px;
+        font-size: 10px;
+        border: 2px solid white;
+    }
+}

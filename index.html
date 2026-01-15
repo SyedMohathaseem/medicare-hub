@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MediCare Hub - Order medicines from verified local medical stores. Upload prescription, get delivery.">
+  <title>MediCare Hub - Your Trusted Medical Partner</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💊</text></svg>">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            <path d="M12 5v14"/>
+            <path d="M5 12h14"/>
+          </svg>
+        </div>
+        <span class="logo-text">MediCare Hub</span>
+      </a>
+      
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <a href="index.html" class="nav-link active">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span class="hide-mobile">Home</span>
+        </a>
+
+        <a href="about.html" class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+          </svg>
+          <span class="hide-mobile">About</span>
+        </a>
+        
+        <a href="contact.html" class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <span class="hide-mobile">Contact</span>
+        </a>
+        
+        <a href="#" class="nav-link" onclick="showUserNotifications(); return false;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="hide-mobile">Alerts</span>
+          <span id="userNotiBadge" class="notification-badge" style="display: none;">0</span>
+        </a>
+        
+        <!-- Login/Profile Link -->
+        <div id="authNav">
+          <a href="login.html" class="nav-link" id="loginLink">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+            <span class="hide-mobile">Login</span>
+          </a>
+          
+          <div id="userProfile" style="display: none; position: relative;">
+            <button class="nav-link" onclick="toggleProfileMenu()" style="background: none; border: none; cursor: pointer;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M20 21a8 8 0 0 0-16 0"/>
+              </svg>
+              <span class="hide-mobile" id="userName">User</span>
+            </button>
+            <div id="profileMenu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); padding: 8px; min-width: 150px; z-index: 100;">
+              <div style="padding: 8px 12px; color: #6b7280; font-size: 12px; border-bottom: 1px solid #e5e7eb;">
+                Logged in as
+              </div>
+              <div style="padding: 8px 12px; font-weight: 600; color: #1f2937; font-size: 14px;" id="userPhoneDisplay"></div>
+              <button onclick="handleLogout()" style="width: 100%; padding: 10px 12px; background: #fee2e2; color: #dc2626; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; margin-top: 4px; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1 class="hero-title">Your Medicines,<br>Delivered with Care</h1>
+      <p class="hero-subtitle">Select a nearby medical store, upload your prescription or medicine photo, and get it delivered to your doorstep.</p>
+      
+      <!-- Trust Indicators -->
+      <div class="trust-banner">
+        <div class="trust-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <p class="trust-text"><strong>Verified Stores Only</strong> — Same in-store price & discount guaranteed</p>
+      </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-container">
+      <div class="search-box">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+        <input type="text" class="search-input" id="storeSearch" placeholder="Search by store name or area...">
+      </div>
+    </section>
+
+    <!-- Page Header -->
+    <section class="page-header">
+      <h2 class="page-title">Select a Medical Store</h2>
+      <p class="page-subtitle">Choose a verified store near you to place your order</p>
+    </section>
+
+    <!-- Stores Grid -->
+    <section class="store-grid" id="storesGrid">
+      <!-- Stores will be dynamically loaded here -->
+    </section>
+
+    <!-- No Results Message -->
+    <div id="noResults" class="text-center p-6" style="display: none;">
+      <div class="ai-message info">
+        <div class="ai-message-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+        </div>
+        <div class="ai-message-content">
+          <h4>No stores found</h4>
+          <p>Try searching with a different name or area</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Login Modal -->
+  <div id="loginModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 20px; padding: 2rem; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: modalSlide 0.3s ease;">
+      <div style="width: 70px; height: 70px; margin: 0 auto 1rem; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px;">
+        👋
+      </div>
+      <h3 style="font-size: 1.25rem; font-weight: 700; color: #1f2937; margin-bottom: 0.5rem;">New to MediCare?</h3>
+      <p style="color: #6b7280; margin-bottom: 1.5rem; font-size: 0.9rem;">Login to track orders & save address, or continue as guest to order quickly.</p>
+      <div style="display: flex; gap: 0.75rem; flex-direction: column;">
+        <button onclick="goToLogin()" style="width: 100%; padding: 0.75rem 1rem; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);">
+          Login / Sign Up
+        </button>
+        <button onclick="continueAsGuest()" style="width: 100%; padding: 0.75rem 1rem; background: transparent; color: #6b7280; border: 1px solid #e5e7eb; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          Continue as Guest
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <style>
+    @keyframes modalSlide {
+      from { opacity: 0; transform: scale(0.9) translateY(-20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-logo">
+        <span style="font-size: 28px;">💊</span>
+        <span class="sidebar-logo-text">MediCare Hub</span>
+      </div>
+      <p class="footer-text">© 2026 MediCare Hub. Your trusted medical partner.</p>
+      <p class="footer-text" style="margin-top: 8px;">
+        <a href="admin/login.html" style="color: var(--gray-500); text-decoration: underline;">Admin Panel</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Store Card Template -->
+  <template id="storeCardTemplate">
+    <article class="store-card" data-store-id="">
+      <div class="store-header">
+        <div class="store-icon">🏥</div>
+        <div class="store-status">
+          <span class="store-status-dot"></span>
+          <span class="status-text"></span>
+        </div>
+      </div>
+      
+      <h3 class="store-name"></h3>
+      <p class="store-area">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span class="area-text"></span>
+      </p>
+      
+      <div class="store-badges">
+        <!-- Badges will be added dynamically -->
+      </div>
+      
+      <button class="btn btn-primary select-store-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/>
+          <path d="m12 5 7 7-7 7"/>
+        </svg>
+        Select Store
+      </button>
+    </article>
+  </template>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Check login status and update navbar
+    function updateAuthNav() {
+      const user = MediCareData.getLoggedInUser();
+      const loginLink = document.getElementById('loginLink');
+      const userProfile = document.getElementById('userProfile');
+      
+      if (user) {
+        loginLink.style.display = 'none';
+        userProfile.style.display = 'block';
+        document.getElementById('userName').textContent = user.name.split(' ')[0];
+        document.getElementById('userPhoneDisplay').textContent = user.phone;
+      } else {
+        loginLink.style.display = 'flex';
+        userProfile.style.display = 'none';
+      }
+    }
+    
+    function toggleProfileMenu() {
+      const menu = document.getElementById('profileMenu');
+      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleLogout() {
+      MediCareData.logoutUser();
+      window.location.reload();
+    }
+    
+    // Close profile menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const profileMenu = document.getElementById('profileMenu');
+      const userProfile = document.getElementById('userProfile');
+      if (profileMenu && !userProfile.contains(e.target)) {
+        profileMenu.style.display = 'none';
+      }
+    });
+    
+    // Login Modal Functions
+    function closeLoginModal() {
+      const modal = document.getElementById('loginModal');
+      if (modal) {
+        modal.style.display = 'none';
+        sessionStorage.removeItem('medicare_redirect_store');
+      }
+    }
+    
+    function continueAsGuest() {
+      const storeId = sessionStorage.getItem('medicare_redirect_store');
+      sessionStorage.setItem('medicare_guest_mode', 'true');
+      closeLoginModal();
+      
+      if (storeId) {
+        MediCareData.setCurrentStore(storeId);
+        window.location.href = `store.html?id=${storeId}`;
+      }
+    }
+    
+    function goToLogin() {
+      window.location.href = 'login.html';
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('loginModal')?.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeLoginModal();
+      }
+    });
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', updateAuthNav);
+  </script>
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
+    <a href="index.html" class="bottom-nav-item active">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.1l-10 9 1.5 1.5L5 11.2V20h5v-6h4v6h5v-8.8l1.5 1.4 1.5-1.5z"/>
+        </svg>
+      </div>
+      <span>Home</span>
+    </a>
+    
+    <a href="index.html#search-focus" class="bottom-nav-item" onclick="handleMobileSearch(event)">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <span>Search</span>
+    </a>
+    
+    <a href="#" class="bottom-nav-item" onclick="showUserNotifications(); return false;">
+      <div class="icon" style="position: relative;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span id="mobileNotiBadge" class="notification-badge mobile-badge" style="display: none;">0</span>
+      </div>
+      <span>Notifications</span>
+    </a>
+    
+    <a href="javascript:void(0)" class="bottom-nav-item" id="mobileProfileLink" onclick="handleMobileProfileClick(event)">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <!-- Mobile Profile Modal -->
+  <div id="mobileProfileModal" class="mobile-profile-modal">
+    <div class="mobile-profile-content">
+      <div class="profile-avatar-large">👤</div>
+      <div class="mobile-profile-header">
+        <h3 id="mobileProfileName">User Name</h3>
+        <p id="mobileProfilePhone">Phone Number</p>
+      </div>
+      <div class="mobile-profile-actions">
+        <button onclick="handleLogout()" style="width: 100%; padding: 14px; background: #fee2e2; color: #dc2626; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer;">
+          Logout
+        </button>
+        <button onclick="closeMobileProfile()" style="width: 100%; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openMobileProfile() {
+      const user = MediCareData.getLoggedInUser();
+      if (user) {
+        document.getElementById('mobileProfileName').textContent = user.name;
+        document.getElementById('mobileProfilePhone').textContent = user.phone;
+      }
+      document.getElementById('mobileProfileModal').classList.add('show');
+    }
+
+    function closeMobileProfile() {
+      document.getElementById('mobileProfileModal').classList.remove('show');
+    }
+    
+    // Robust Click Handler
+    function handleMobileProfileClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const user = MediCareData.getLoggedInUser();
+      
+      if (user) {
+        // If logged in, ONLY open modal
+        openMobileProfile();
+      } else {
+        // If logged out, Go to login
+        window.location.href = 'login.html';
+      }
+      return false;
+    }
+
+    // Close modal when clicking outside content
+    document.getElementById('mobileProfileModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeMobileProfile();
+      }
+    });
+
+    function updateAuthNav() {
+      const user = MediCareData.getLoggedInUser();
+      
+      const loginLink = document.getElementById('loginLink');
+      const userProfile = document.getElementById('userProfile');
+      
+      const mobileProfileLink = document.getElementById('mobileProfileLink');
+      const mobileProfileName = document.getElementById('mobileProfileName');
+      const mobileProfilePhone = document.getElementById('mobileProfilePhone');
+      
+      if (user) {
+        // Desktop
+        if (loginLink) loginLink.style.display = 'none';
+        if (userProfile) userProfile.style.display = 'block';
+        if (document.getElementById('userName')) document.getElementById('userName').textContent = user.name.split(' ')[0];
+        if (document.getElementById('userPhoneDisplay')) document.getElementById('userPhoneDisplay').textContent = user.phone;
+        
+        // Mobile Visuals ONLY
+        if(mobileProfileLink) {
+           mobileProfileLink.querySelector('.icon').innerHTML = `
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+               <circle cx="12" cy="7" r="4"/>
+             </svg>`;
+           mobileProfileLink.querySelector('span').textContent = 'Profile';
+           
+           if(mobileProfileName) mobileProfileName.textContent = user.name;
+           if(mobileProfilePhone) mobileProfilePhone.textContent = user.phone;
+        }
+      } else {
+        // Desktop
+        if (loginLink) loginLink.style.display = 'flex';
+        if (userProfile) userProfile.style.display = 'none';
+        
+        // Mobile Visuals ONLY
+        if(mobileProfileLink) {
+           mobileProfileLink.querySelector('.icon').innerHTML = `
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+               <polyline points="10 17 15 12 10 7"/>
+               <line x1="15" y1="12" x2="3" y2="12"/>
+             </svg>`;
+           mobileProfileLink.querySelector('span').textContent = 'Login';
+        }
+      }
+    }
+  </script>
+
+
+  <script>
+    function handleMobileSearch(e) {
+      // If we are already on index.html, just focus.
+      // Otherwise, the href default action will take us to index.html#search-focus
+      if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/')) {
+        e.preventDefault();
+        const searchInput = document.getElementById('storeSearch');
+        if (searchInput) {
+           searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+           searchInput.focus();
+        }
+      }
+    }
+
+    // Mobile Bottom Nav Active State
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check for search focus hash
+      if (window.location.hash === '#search-focus') {
+        setTimeout(() => {
+          const searchInput = document.getElementById('storeSearch');
+          if (searchInput) {
+             searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+             searchInput.focus();
+          }
+        }, 300);
+      }
+
+      const currentPath = window.location.pathname;
+      const navItems = document.querySelectorAll('.bottom-nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (currentPath.includes(href) && href !== '#' && !href.includes('#')) {
+          navItems.forEach(nav => nav.classList.remove('active'));
+          item.classList.add('active');
+        }
+      });
+      
+      // Sync badges
+      const desktopBadge = document.getElementById('userNotiBadge');
+      const mobileBadge = document.getElementById('mobileNotiBadge');
+      
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' || mutation.type === 'childList') {
+             mobileBadge.textContent = desktopBadge.textContent;
+             mobileBadge.style.display = desktopBadge.style.display;
+          }
+        });
+      });
+      
+      if(desktopBadge) {
+        observer.observe(desktopBadge, { attributes: true, childList: true, subtree: true });
+      }
+    });
+  </script>
+</body>
+</html>
