@@ -15,46 +15,58 @@ function initializeApp() {
   setupSearch();
 }
 
-// Load and display stores
+// Load and display stores with Stale-While-Revalidate
 async function loadStores(searchQuery = '') {
   const storesGrid = document.getElementById('storesGrid');
   const noResults = document.getElementById('noResults');
   const template = document.getElementById('storeCardTemplate');
   
   if (!storesGrid || !template) return;
-  
-  // Get stores (filtered if search query provided)
-  let stores = [];
+
+  // 1. Initial Render from Local Cache (Instant)
+  if (!searchQuery) {
+     const localStores = MediCareData.getLocalStores();
+     if (localStores.length > 0) {
+        renderStores(localStores, storesGrid, template, noResults);
+     }
+  }
+
+  // 2. Fetch Fresh Data (Async)
   try {
+    let stores = [];
     if (searchQuery) {
       stores = await MediCareData.searchStores(searchQuery);
     } else {
       stores = await MediCareData.getStores();
     }
+    
+    // 3. Re-render with fresh data
+    renderStores(stores, storesGrid, template, noResults);
+    
   } catch (error) {
     console.error("Failed to load stores:", error);
-    // Handle error (maybe show an error message in the grid)
-    storesGrid.innerHTML = '<p class="text-center">Failed to load stores. Please try again.</p>';
-    return;
+    if (!storesGrid.hasChildNodes()) {
+         storesGrid.innerHTML = '<p class="text-center">Failed to load stores. Please try again.</p>';
+    }
   }
-  
-  // Keep stores in original order (as defined in data.js)
-  
+}
+
+function renderStores(stores, container, template, noResultsElement) {
   // Clear existing cards
-  storesGrid.innerHTML = '';
+  container.innerHTML = '';
   
   // Show/hide no results message
   if (stores.length === 0) {
-    noResults.style.display = 'block';
+    noResultsElement.style.display = 'block';
     return;
   } else {
-    noResults.style.display = 'none';
+    noResultsElement.style.display = 'none';
   }
   
   // Create store cards
   stores.forEach(store => {
     const card = createStoreCard(store, template);
-    storesGrid.appendChild(card);
+    container.appendChild(card);
   });
 }
 
@@ -157,8 +169,8 @@ function selectStore(storeId) {
 
 // Show login modal
 // Notification History UI for Website
-window.showUserNotifications = function() {
-  const user = MediCareData.getLoggedInUser();
+window.showUserNotifications = async function() {
+  const user = await MediCareData.getLoggedInUser();
   if (!user) {
     MediCareAlerts.confirm(
        'Login Required',
@@ -284,8 +296,8 @@ function setupRealtimeNotifications() {
 // Track last notification count to trigger sound/system noti on incoming
 let lastCustomerNotiCount = -1;
 
-function updateCustomerBadge() {
-  const user = MediCareData.getLoggedInUser();
+async function updateCustomerBadge() {
+  const user = await MediCareData.getLoggedInUser();
   if (!user) return;
 
   const notis = MediCareData.getUserNotifications('user', user.phone);

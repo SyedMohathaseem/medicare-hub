@@ -145,6 +145,11 @@ async function getStores() {
   }
 }
 
+// Get Local Stores Sync
+function getLocalStores() {
+  return JSON.parse(localStorage.getItem('medicare_stores') || '[]');
+}
+
 // Get store by ID (Async)
 async function getStoreById(id) {
   if (isFirestoreReady()) {
@@ -403,21 +408,46 @@ function validateStoreLogin(username, password) {
 }
 
 // Store Status Management (for Admin)
-function updateStoreStatus(storeId, updates) {
-  const stores = getStores();
-  const storeIndex = stores.findIndex(store => store.id === parseInt(storeId));
+async function updateStoreStatus(storeId, updates) {
+  // Firestore Update
+  if (isFirestoreReady()) {
+    try {
+      await window.db.collection('stores').doc(storeId.toString()).update(updates);
+    } catch (e) {
+      console.error('Firestore Store Update Error:', e);
+    }
+  }
+
+  // Local Update
+  const stores = await getStores(); // reusing getStores which handles local/remote fetch logic
+  // But getStores returns a COPY, updating it won't update localStorage automatically unless we save it back.
+  // We need to fetch invalidating cache or just read local storage directly for the update.
+  // Actually getStores returns an array.
+  
+  // Let's read purely local for the local update to be safe
+  const localStores = JSON.parse(localStorage.getItem('medicare_stores') || '[]');
+  const storeIndex = localStores.findIndex(store => store.id === parseInt(storeId));
   
   if (storeIndex !== -1) {
-    stores[storeIndex] = { ...stores[storeIndex], ...updates };
-    localStorage.setItem('medicare_stores', JSON.stringify(stores));
-    return stores[storeIndex];
+    localStores[storeIndex] = { ...localStores[storeIndex], ...updates };
+    localStorage.setItem('medicare_stores', JSON.stringify(localStores));
+    return localStores[storeIndex];
   }
   return null;
 }
 
-function addNewStore(storeData) {
-  const stores = getStores();
-  const newId = Math.max(...stores.map(s => s.id), 0) + 1;
+async function addNewStore(storeData) {
+  // Get current max ID (from local or remote? Remote is truth)
+  // For simplicity, let's generate a new ID based on timestamp to avoid conflicts in concurrent env, 
+  // OR fetch all stores and +1 (risky for concurrency but simple for this app).
+  // Current app uses Integer IDs. Let's stick to that but be careful.
+  let newId;
+  const stores = await getStores();
+  if (stores.length > 0) {
+      newId = Math.max(...stores.map(s => s.id)) + 1;
+  } else {
+      newId = 1;
+  }
   
   const newStore = {
     id: newId,
@@ -431,14 +461,35 @@ function addNewStore(storeData) {
     rating: 0
   };
   
-  stores.push(newStore);
-  localStorage.setItem('medicare_stores', JSON.stringify(stores));
+  // Firestore Save
+  if (isFirestoreReady()) {
+    try {
+      await window.db.collection('stores').doc(newId.toString()).set(newStore);
+    } catch (e) {
+      console.error('Firestore New Store Error:', e);
+    }
+  }
+  
+  // Local Save
+  const localStores = JSON.parse(localStorage.getItem('medicare_stores') || '[]');
+  localStores.push(newStore);
+  localStorage.setItem('medicare_stores', JSON.stringify(localStores));
   
   return newStore;
 }
 
-function deleteStore(storeId) {
-  let stores = getStores();
+async function deleteStore(storeId) {
+  // Firestore Delete
+  if (isFirestoreReady()) {
+    try {
+      await window.db.collection('stores').doc(storeId.toString()).delete();
+    } catch (e) {
+      console.error('Firestore Store Delete Error:', e);
+    }
+  }
+
+  // Local Delete
+  let stores = JSON.parse(localStorage.getItem('medicare_stores') || '[]');
   stores = stores.filter(store => store.id !== parseInt(storeId));
   localStorage.setItem('medicare_stores', JSON.stringify(stores));
 }
@@ -594,15 +645,30 @@ function logout() {
 }
 
 // User Management
-function getUsers() {
+
+// Sync Helper for getting users from local (needed for some sync checks)
+function getLocalUsers() {
   if (!localStorage.getItem('medicare_users')) {
     localStorage.setItem('medicare_users', JSON.stringify([]));
   }
   return JSON.parse(localStorage.getItem('medicare_users'));
 }
 
-function registerUser(userData) {
-  const users = getUsers();
+async function getUsers() {
+  if (isFirestoreReady()) {
+    try {
+      const snapshot = await window.db.collection('users').get();
+      return snapshot.docs.map(doc => doc.data());
+    } catch (e) {
+      console.warn('Firestore User Fetch Error:', e);
+      return getLocalUsers();
+    }
+  }
+  return getLocalUsers();
+}
+
+async function registerUser(userData) {
+  const users = await getUsers();
   
   // Check if phone already exists
   const existingUser = users.find(u => u.phone === userData.phone);
@@ -612,27 +678,63 @@ function registerUser(userData) {
   
   // Create new user
   const newUser = {
-    id: Date.now(),
+    id: Date.now(), // Generate ID
     name: userData.name,
     phone: userData.phone,
     password: userData.password,
+    address: userData.address || '',
     createdAt: new Date().toISOString()
   };
   
-  users.push(newUser);
-  localStorage.setItem('medicare_users', JSON.stringify(users));
+  // 1. Save to Firestore (Async)
+  if (isFirestoreReady()) {
+    try {
+      // Use phone as doc ID for uniqueness or generated ID? 
+      // Plan used Date.now(), let's stick to string ID if possible
+      await window.db.collection('users').doc(newUser.id.toString()).set(newUser);
+    } catch (e) {
+      console.error('Firestore Register Error:', e);
+      // Proceed to local storage (Dual Write)
+    }
+  }
+  
+  // 2. Save to LocalStorage (Backup)
+  const localUsers = getLocalUsers();
+  localUsers.push(newUser);
+  localStorage.setItem('medicare_users', JSON.stringify(localUsers));
   
   return { success: true, user: newUser };
 }
 
-function validateUserLogin(phone, password) {
-  const users = getUsers();
+async function validateUserLogin(phone, password) {
+  // Try Firestore first (for most up to date)
+  if (isFirestoreReady()) {
+    try {
+       const snapshot = await window.db.collection('users').where('phone', '==', phone).where('password', '==', password).get();
+       if (!snapshot.empty) {
+         return snapshot.docs[0].data();
+       }
+    } catch (e) {
+      console.error('Firestore Login Error:', e);
+    }
+  }
+
+  // Fallback to LocalStorage
+  const users = getLocalUsers();
   const user = users.find(u => u.phone === phone && u.password === password);
   return user || null;
 }
 
-function getUserByPhone(phone) {
-  const users = getUsers();
+async function getUserByPhone(phone) {
+  if (isFirestoreReady()) {
+    try {
+      const snapshot = await window.db.collection('users').where('phone', '==', phone).get();
+      if (!snapshot.empty) return snapshot.docs[0].data();
+    } catch (e) {
+       console.warn('Firestore Get User Error:', e);
+    }
+  }
+  const users = getLocalUsers();
   return users.find(u => u.phone === phone) || null;
 }
 
@@ -640,11 +742,25 @@ function setLoggedInUser(userId) {
   localStorage.setItem('medicare_logged_user', userId);
 }
 
-function getLoggedInUser() {
+// Get Logged In User (Async likely better, but for now we keep it Sync for ID, Async for Details? 
+// No, Plan said Async. Let's make it Async.)
+async function getLoggedInUser() {
   const userId = localStorage.getItem('medicare_logged_user');
   if (!userId) return null;
   
-  const users = getUsers();
+  if (isFirestoreReady()) {
+    try {
+      const doc = await window.db.collection('users').doc(userId.toString()).get();
+      if (doc.exists) return doc.data();
+       // Try searching by ID field if doc ID differs (fallback logic)
+       const snapshot = await window.db.collection('users').where('id', '==', parseInt(userId)).get();
+       if (!snapshot.empty) return snapshot.docs[0].data();
+    } catch (e) {
+      // Fallback
+    }
+  }
+  
+  const users = getLocalUsers();
   return users.find(u => u.id === parseInt(userId)) || null;
 }
 
@@ -656,20 +772,37 @@ function logoutUser() {
   localStorage.removeItem('medicare_logged_user');
 }
 
-function findOrCreateUserByPhone(phone, address) {
-  let users = getUsers();
-  let user = users.find(u => u.phone === phone);
+async function findOrCreateUserByPhone(phone, address) {
+  let user = await getUserByPhone(phone);
   
   if (user) {
     // Update address if provided
     if (address && (!user.address || user.address !== address)) {
         user.address = address;
-        localStorage.setItem('medicare_users', JSON.stringify(users));
+        
+        // Update Firestore
+        if (isFirestoreReady()) {
+          try {
+             // Need doc ID. If user came from local, we might not know doc ID easily if it differs from ID.
+             // Assumption: doc ID is user.id.toString()
+             await window.db.collection('users').doc(user.id.toString()).update({ address: address });
+          } catch(e) {
+             console.error('Firestore Address Update Error:', e);
+          }
+        }
+
+        // Update Local
+        const localUsers = getLocalUsers();
+        const localUserIdx = localUsers.findIndex(u => u.id === user.id);
+        if (localUserIdx !== -1) {
+           localUsers[localUserIdx].address = address;
+           localStorage.setItem('medicare_users', JSON.stringify(localUsers));
+        }
     }
     return user;
   }
   
-  // Create new user
+  // Create new user (Guest)
   const newUser = {
     id: Date.now(),
     name: 'Valued Customer',
@@ -679,23 +812,36 @@ function findOrCreateUserByPhone(phone, address) {
     createdAt: new Date().toISOString()
   };
   
-  users.push(newUser);
-  localStorage.setItem('medicare_users', JSON.stringify(users));
+  // Firestore Save
+  if (isFirestoreReady()) {
+      try {
+        await window.db.collection('users').doc(newUser.id.toString()).set(newUser);
+      } catch (e) {
+        console.error('Firestore Guest Create Error:', e);
+      }
+  }
+  
+  // Local Save
+  const localUsers = getLocalUsers();
+  localUsers.push(newUser);
+  localStorage.setItem('medicare_users', JSON.stringify(localUsers));
   
   return newUser;
 }
 
 // Persistent Notifications
-function getStoredNotifications() {
+// Persistent Notifications
+
+// Local Helper
+function getLocalNotifications() {
   if (!localStorage.getItem('medicare_notis_data')) {
       localStorage.setItem('medicare_notis_data', JSON.stringify([]));
   }
   return JSON.parse(localStorage.getItem('medicare_notis_data'));
 }
 
-function addNotification(recipientRole, recipientId, title, message, type='info') {
-    const notis = getStoredNotifications();
-    notis.push({
+async function addNotification(recipientRole, recipientId, title, message, type='info') {
+    const newNoti = {
         id: Date.now().toString(36) + Math.random().toString(36).substr(2),
         recipientRole,
         recipientId,
@@ -704,20 +850,62 @@ function addNotification(recipientRole, recipientId, title, message, type='info'
         type,
         read: false,
         createdAt: new Date().toISOString()
-    });
+    };
+    
+    // Firestore Write
+    if (isFirestoreReady()) {
+        try {
+            await window.db.collection('notifications').doc(newNoti.id).set(newNoti);
+        } catch (e) {
+            console.error('Firestore Noti Write Error:', e);
+        }
+    }
+    
+    // Local Write (Backup & Instant UI update if local)
+    const notis = getLocalNotifications();
+    notis.push(newNoti);
     localStorage.setItem('medicare_notis_data', JSON.stringify(notis));
 }
 
-function getUserNotifications(role, id) {
-    const notis = getStoredNotifications();
-    // For admin, id is 'admin' or ignored if we assume 1 admin
+async function getUserNotifications(role, id) {
+    if (isFirestoreReady()) {
+        try {
+            // Complex query: role == role AND (recipientId == id OR role == 'admin')
+            // Firestore doesn't support OR directly in one query easily without multiple queries, 
+            // but for specific user ID it's simple.
+            
+            let ref = window.db.collection('notifications').where('recipientRole', '==', role);
+            
+            if (role !== 'admin') {
+                ref = ref.where('recipientId', '==', id);
+            }
+            // Logic for admin seeing all admin notis? Yes.
+            
+            const snapshot = await ref.get();
+            const firestoreNotis = snapshot.docs.map(doc => doc.data());
+            return firestoreNotis.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+        } catch (e) {
+            console.warn('Firestore User Noti Fetch Error:', e);
+        }
+    }
+
+    const notis = getLocalNotifications();
     return notis
       .filter(n => n.recipientRole === role && (n.recipientId === id || role === 'admin'))
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
-function markNotificationRead(id) {
-    const notis = getStoredNotifications();
+async function markNotificationRead(id) {
+    if (isFirestoreReady()) {
+        try {
+            await window.db.collection('notifications').doc(id).update({ read: true });
+        } catch (e) {
+             console.error('Firestore Noti Read Error:', e);
+        }
+    }
+
+    const notis = getLocalNotifications();
     const idx = notis.findIndex(n => n.id === id);
     if (idx !== -1) {
         notis[idx].read = true;
@@ -725,8 +913,16 @@ function markNotificationRead(id) {
     }
 }
 
-function deleteNotification(id) {
-    let notis = getStoredNotifications();
+async function deleteNotification(id) {
+    if (isFirestoreReady()) {
+        try {
+            await window.db.collection('notifications').doc(id).delete();
+        } catch (e) {
+             console.error('Firestore Noti Delete Error:', e);
+        }
+    }
+
+    let notis = getLocalNotifications();
     notis = notis.filter(n => n.id !== id);
     localStorage.setItem('medicare_notis_data', JSON.stringify(notis));
 }
@@ -962,6 +1158,7 @@ const MediCareNotifications = {
 window.MediCareData = {
   // Stores
   getStores,
+  getLocalStores,
   getStoreById,
   searchStores,
   getOpenStores,

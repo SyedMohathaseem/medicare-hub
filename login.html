@@ -428,9 +428,9 @@
     // Check if already logged in
     document.addEventListener('DOMContentLoaded', () => {
       // Small delay to ensure data.js is loaded
-      setTimeout(() => {
+      setTimeout(async () => {
         if (typeof MediCareData !== 'undefined') {
-          const user = MediCareData.getLoggedInUser();
+          const user = await MediCareData.getLoggedInUser();
           const admin = MediCareData.getAdminLoggedIn();
           const store = MediCareData.getLoggedInStore();
           
@@ -757,8 +757,8 @@
   </div>
 
   <script>
-    function openMobileProfile() {
-      const user = MediCareData.getLoggedInUser();
+    async function openMobileProfile() {
+      const user = await MediCareData.getLoggedInUser();
       if (user) {
         document.getElementById('mobileProfileName').textContent = user.name;
         document.getElementById('mobileProfilePhone').textContent = user.phone;
@@ -771,11 +771,11 @@
     }
 
     // Robust Click Handler
-    function handleMobileProfileClick(e) {
+    async function handleMobileProfileClick(e) {
       e.preventDefault();
       e.stopPropagation();
       
-      const user = MediCareData.getLoggedInUser();
+      const user = await MediCareData.getLoggedInUser();
       
       if (user) {
         openMobileProfile();
@@ -792,8 +792,8 @@
       }
     });
 
-    function updateAuthNav() {
-      const user = MediCareData.getLoggedInUser();
+    async function updateAuthNav() {
+      const user = await MediCareData.getLoggedInUser();
       
       const mobileProfileLink = document.getElementById('mobileProfileLink');
       const mobileProfileName = document.getElementById('mobileProfileName');

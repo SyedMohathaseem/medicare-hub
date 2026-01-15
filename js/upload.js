@@ -26,7 +26,24 @@ async function initializeStorePage() {
   
   // Load store details
   try {
-    currentStore = await MediCareData.getStoreById(storeId);
+    // 1. Initial Render from Local Cache (Instant)
+    const localStores = MediCareData.getLocalStores();
+    const localStore = localStores.find(s => s.id == storeId); // Loose equality for string/int match
+    if (localStore) {
+      currentStore = localStore;
+      displayStoreInfo(currentStore);
+    }
+
+    // 2. Fetch Fresh Data (Async)
+    const freshStore = await MediCareData.getStoreById(storeId);
+    if (freshStore) {
+       currentStore = freshStore;
+       // 3. Re-render with fresh data
+       displayStoreInfo(currentStore);
+    } else if (!currentStore) {
+       // If no local and no remote, show error
+       throw new Error("Store not found");
+    }
   } catch (error) {
     console.error("Error fetching store:", error);
     currentStore = null;
@@ -154,7 +171,7 @@ function showAIProcessing() {
   `;
 }
 
-function runAIVerification(file) {
+async function runAIVerification(file) {
   // Simulate AI verification checks
   const verificationResults = simulateAIChecks(file);
   
@@ -182,7 +199,7 @@ function runAIVerification(file) {
     document.getElementById('actionButtons').style.display = 'grid';
     
     // Pre-fill if logged in
-    const user = MediCareData.getLoggedInUser();
+    const user = await MediCareData.getLoggedInUser();
     if (user) {
       if (user.phone) document.getElementById('orderPhone').value = user.phone;
       if (user.address) document.getElementById('orderAddress').value = user.address;
@@ -281,7 +298,7 @@ async function processOrderSubmission(orderType) {
   const phone = document.getElementById('orderPhone').value.trim();
   
   // Auto-Login / Update User (Sync for now as per data.js)
-  const user = MediCareData.findOrCreateUserByPhone(phone, address);
+  const user = await MediCareData.findOrCreateUserByPhone(phone, address);
   MediCareData.setLoggedInUser(user.id);
   
   try {
