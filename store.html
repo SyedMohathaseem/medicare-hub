@@ -6,10 +6,17 @@
   <meta name="description" content="Upload prescription or medicine photo to order from your selected medical store.">
   <title>Upload & Order - MediCare Hub</title>
   
-  <!-- Google Fonts -->
+  <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+  
+  <!-- Google Fonts - Non-blocking -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+  
+  <!-- Critical CSS -->
+  <style>:root{--primary:#2563eb;--gray-50:#f9fafb;--gray-900:#111827}body{font-family:'Inter',system-ui,sans-serif;background:var(--gray-50);margin:0}</style>
   
   <!-- Styles -->
   <link rel="stylesheet" href="css/styles.css">
