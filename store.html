@@ -250,17 +250,26 @@
 
   <script>
     async function openMobileProfile(user) {
-      if (!user) user = await MediCareData.getLoggedInUser();
+      if (!user) {
+        console.log('[Profile] No user passed, fetching...');
+        user = await MediCareData.getLoggedInUser();
+      }
       
-      console.log('Mobile Profile User Data:', user); // Debug log
-      alert('Debug User Data: ' + JSON.stringify(user)); // Debug log
+      console.log('[Profile] User data retrieved:', user);
+      console.log('[Profile] User name:', user?.name);
+      console.log('[Profile] User phone:', user?.phone);
       
       if (user) {
          const userName = user.name || user.fullName || 'Valued Customer';
-         const userPhone = user.phone || user.phoneNumber || user.mobile || '';
+         const userPhone = user.phone || user.phoneNumber || user.mobile || 'Not provided';
+         
+         console.log('[Profile] Setting name to:', userName);
+         console.log('[Profile] Setting phone to:', userPhone);
 
         document.getElementById('mobileProfileName').textContent = userName;
         document.getElementById('mobileProfilePhone').textContent = userPhone;
+      } else {
+        console.error('[Profile] No user data available!');
       }
       document.getElementById('mobileProfileModal').classList.add('show');
     }
