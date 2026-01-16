@@ -388,8 +388,8 @@
   </div>
 
   <script>
-    function openMobileProfile() {
-      const user = MediCareData.getLoggedInUser();
+    async function openMobileProfile() {
+      const user = await MediCareData.getLoggedInUser();
       if (user) {
         document.getElementById('mobileProfileName').textContent = user.name;
         document.getElementById('mobileProfilePhone').textContent = user.phone;
@@ -402,11 +402,11 @@
     }
     
     // Robust Click Handler
-    function handleMobileProfileClick(e) {
+    async function handleMobileProfileClick(e) {
       e.preventDefault();
       e.stopPropagation();
       
-      const user = MediCareData.getLoggedInUser();
+      const user = await MediCareData.getLoggedInUser();
       
       if (user) {
         // If logged in, ONLY open modal
@@ -425,8 +425,8 @@
       }
     });
 
-    function updateAuthNav() {
-      const user = MediCareData.getLoggedInUser();
+    async function updateAuthNav() {
+      const user = await MediCareData.getLoggedInUser();
       
       const loginLink = document.getElementById('loginLink');
       const userProfile = document.getElementById('userProfile');
