@@ -295,6 +295,10 @@ async function getOrdersByStore(storeId) {
 
 // Update Order Status (Async)
 async function updateOrderStatus(orderId, status, rejectionReason = null) {
+  // ALWAYS update localStorage first for reliable sync
+  const result = updateLocalOrderStatus(orderId, status, rejectionReason);
+  
+  // Also try Firestore if available
   if (isFirestoreReady()) {
     try {
       const updateData = {
@@ -307,16 +311,14 @@ async function updateOrderStatus(orderId, status, rejectionReason = null) {
       
       const orderRef = db.collection('orders').doc(orderId);
       await orderRef.update(updateData);
-      
-      const doc = await orderRef.get();
-      return doc.data();
+      console.log('Order status updated in Firestore:', orderId, status);
     } catch (e) {
       console.error("Firestore Update Error:", e);
-      return updateLocalOrderStatus(orderId, status, rejectionReason);
+      // Already updated localStorage above
     }
-  } else {
-    return updateLocalOrderStatus(orderId, status, rejectionReason);
   }
+  
+  return result;
 }
 
 // Local helper for status update
