@@ -573,7 +573,7 @@
     }
     
     // Handle form submission
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       hideMessages();
       
@@ -616,7 +616,7 @@
             }
             
             // Register user
-            const result = MediCareData.registerUser({
+            const result = await MediCareData.registerUser({
               name: name,
               phone: username,
               password: password
@@ -633,7 +633,7 @@
             }
           } else {
             // Login
-            const user = MediCareData.validateUserLogin(username, password);
+            const user = await MediCareData.validateUserLogin(username, password);
             if (user) {
               MediCareData.setLoggedInUser(user.id);
               showSuccess('Login successful! Redirecting...');
@@ -642,7 +642,7 @@
               }, 1000);
             } else {
               // Detailed error checking
-              const existingUser = MediCareData.getUserByPhone(username);
+              const existingUser = await MediCareData.getUserByPhone(username);
               if (existingUser) {
                  showError('Incorrect password. Please try again.');
               } else {
