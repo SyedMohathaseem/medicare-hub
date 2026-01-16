@@ -1839,19 +1839,28 @@ td {
   text-align: center;
   width: 100%;
   margin-bottom: 32px;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .mobile-profile-header h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 4px 0;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  margin: 0 0 4px 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .mobile-profile-header p {
-  color: #6b7280;
-  font-size: 1rem;
-  margin: 0;
+  color: #6b7280 !important;
+  font-size: 1rem !important;
+  margin: 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .mobile-profile-actions {
