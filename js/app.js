@@ -167,24 +167,26 @@ function selectStore(storeId) {
   window.location.href = `store.html?id=${storeId}`;
 }
 
-// Show login modal
 // Notification History UI for Website
 window.showUserNotifications = async function() {
+  // Check for logged in user OR guest user phone
   const user = await MediCareData.getLoggedInUser();
-  if (!user) {
-    MediCareAlerts.confirm(
-       'Login Required',
-       'Please login to view your notifications history.',
-       'Login Now',
-       'Cancel',
-       () => { window.location.href = 'login.html'; }
+  const guestPhone = sessionStorage.getItem('medicare_guest_phone');
+  
+  const userPhone = user ? user.phone : guestPhone;
+  
+  if (!userPhone) {
+    MediCareAlerts.alert(
+       'No Notifications',
+       'Place an order to receive updates and notifications.',
+       () => {}
     );
     return;
   }
   
   // Use sync localStorage directly
   const allNotis = JSON.parse(localStorage.getItem('medicare_notis_data') || '[]');
-  const notis = allNotis.filter(n => n.role === 'user' && n.userId === user.phone);
+  const notis = allNotis.filter(n => n.role === 'user' && n.userId === userPhone);
   
   const overlay = document.createElement('div');
   overlay.style.cssText = `
@@ -299,12 +301,16 @@ function setupRealtimeNotifications() {
 let lastCustomerNotiCount = -1;
 
 async function updateCustomerBadge() {
+  // Check for logged in user OR guest user phone
   const user = await MediCareData.getLoggedInUser();
-  if (!user) return;
+  const guestPhone = sessionStorage.getItem('medicare_guest_phone');
+  
+  const userPhone = user ? user.phone : guestPhone;
+  if (!userPhone) return;
 
   // Use sync localStorage directly
   const allNotis = JSON.parse(localStorage.getItem('medicare_notis_data') || '[]');
-  const notis = allNotis.filter(n => n.role === 'user' && n.userId === user.phone);
+  const notis = allNotis.filter(n => n.role === 'user' && n.userId === userPhone);
   
   // Check for new notifications to trigger alert
   if (lastCustomerNotiCount !== -1 && notis.length > lastCustomerNotiCount) {

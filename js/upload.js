@@ -309,6 +309,9 @@ async function processOrderSubmission(orderType) {
   const address = document.getElementById('orderAddress').value.trim();
   const phone = document.getElementById('orderPhone').value.trim();
   
+  // Store guest phone for notification tracking
+  sessionStorage.setItem('medicare_guest_phone', phone);
+  
   // Auto-Login / Update User (Sync for now as per data.js)
   const user = await MediCareData.findOrCreateUserByPhone(phone, address);
   MediCareData.setLoggedInUser(user.id);
