@@ -252,9 +252,14 @@
     async function openMobileProfile(user) {
       if (!user) user = await MediCareData.getLoggedInUser();
       
+      console.log('Mobile Profile User Data:', user); // Debug log
+      
       if (user) {
-        document.getElementById('mobileProfileName').textContent = user.name || 'Valued Customer';
-        document.getElementById('mobileProfilePhone').textContent = user.phone || '';
+         const userName = user.name || user.fullName || 'Valued Customer';
+         const userPhone = user.phone || user.phoneNumber || user.mobile || '';
+
+        document.getElementById('mobileProfileName').textContent = userName;
+        document.getElementById('mobileProfilePhone').textContent = userPhone;
       }
       document.getElementById('mobileProfileModal').classList.add('show');
     }
