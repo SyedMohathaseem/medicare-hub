@@ -60,7 +60,11 @@ function loadOrders() {
   
   // Check for new orders
   if (lastOrderCount !== -1 && orders.length > lastOrderCount) {
+    // Show in-app notification
     MediCareNotifications.show('New Order Received! 🛍️', 'A new order needs your attention.');
+    
+    // Trigger browser push notification
+    showPushNotification();
   }
   lastOrderCount = orders.length;
   

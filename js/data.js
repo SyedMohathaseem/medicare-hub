@@ -213,25 +213,26 @@ async function createOrder(storeId, imageData, note, address, phone, orderType) 
     rejectionReason: null
   };
 
-  // Get Store Details first
-  const store = await getStoreById(storeId);
+  // Get Store Details first (use sync local for reliability)
+  const stores = JSON.parse(localStorage.getItem('medicare_stores') || '[]');
+  const store = stores.find(s => s.id === parseInt(storeId));
   if (store) {
     newOrder.storeName = store.name;
     newOrder.storeWhatsapp = store.whatsapp;
   }
 
+  // ALWAYS save to localStorage first for reliable dashboard sync
+  saveOrderToLocal(newOrder);
+  
+  // Also try Firestore if available
   if (isFirestoreReady()) {
     try {
       await db.collection('orders').doc(newOrder.id).set(newOrder);
-      // Notify Store (Cloud Function would be better, but we'll sim via DB or client)
-      // We will skip localStorage notifications here as Firestore is the source of truth
+      console.log('Order saved to Firestore:', newOrder.id);
     } catch (e) {
       console.error("Firestore Write Error:", e);
-      // Fallback
-      saveOrderToLocal(newOrder);
+      // Already saved to localStorage above
     }
-  } else {
-    saveOrderToLocal(newOrder);
   }
   
   return newOrder;
@@ -240,11 +241,24 @@ async function createOrder(storeId, imageData, note, address, phone, orderType) 
 // LocalStorage Helper for Orders
 function saveOrderToLocal(order) {
   const orders = JSON.parse(localStorage.getItem('medicare_orders') || '[]');
-  orders.push(order);
-  localStorage.setItem('medicare_orders', JSON.stringify(orders));
   
-  // Local Notifications
-  addNotification('store', order.storeId, 'New Order Received', `Order #${order.id} has been placed.`, 'success');
+  // Check if order already exists (avoid duplicates)
+  const existingIndex = orders.findIndex(o => o.id === order.id);
+  if (existingIndex === -1) {
+    orders.push(order);
+    localStorage.setItem('medicare_orders', JSON.stringify(orders));
+    console.log('Order saved to localStorage:', order.id);
+    
+    // Trigger storage event for other tabs/windows
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'medicare_orders',
+      newValue: JSON.stringify(orders)
+    }));
+    
+    // Add notifications for store and admin
+    addNotification('store', order.storeId, 'New Order Received! 🛍️', `Order #${order.id} from ${order.phone || 'Customer'}`, 'success');
+    addNotification('admin', 'admin', 'New Order Placed', `Order #${order.id} for ${order.storeName || 'Store'}`, 'info');
+  }
 }
 
 // Get Orders (Async)
