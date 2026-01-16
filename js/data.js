@@ -883,11 +883,11 @@ function getLocalNotifications() {
   return JSON.parse(localStorage.getItem('medicare_notis_data'));
 }
 
-async function addNotification(recipientRole, recipientId, title, message, type='info') {
+async function addNotification(role, userId, title, message, type='info') {
     const newNoti = {
         id: Date.now().toString(36) + Math.random().toString(36).substr(2),
-        recipientRole,
-        recipientId,
+        role,
+        userId,
         title,
         message,
         type,
@@ -908,21 +908,24 @@ async function addNotification(recipientRole, recipientId, title, message, type=
     const notis = getLocalNotifications();
     notis.push(newNoti);
     localStorage.setItem('medicare_notis_data', JSON.stringify(notis));
+    
+    // Trigger storage event for other tabs
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'medicare_notis_data',
+      newValue: JSON.stringify(notis)
+    }));
+    
+    console.log('Notification added:', title, 'for', role, userId);
 }
 
 async function getUserNotifications(role, id) {
     if (isFirestoreReady()) {
         try {
-            // Complex query: role == role AND (recipientId == id OR role == 'admin')
-            // Firestore doesn't support OR directly in one query easily without multiple queries, 
-            // but for specific user ID it's simple.
-            
-            let ref = window.db.collection('notifications').where('recipientRole', '==', role);
+            let ref = window.db.collection('notifications').where('role', '==', role);
             
             if (role !== 'admin') {
-                ref = ref.where('recipientId', '==', id);
+                ref = ref.where('userId', '==', id);
             }
-            // Logic for admin seeing all admin notis? Yes.
             
             const snapshot = await ref.get();
             const firestoreNotis = snapshot.docs.map(doc => doc.data());
@@ -935,7 +938,7 @@ async function getUserNotifications(role, id) {
 
     const notis = getLocalNotifications();
     return notis
-      .filter(n => n.recipientRole === role && (n.recipientId === id || role === 'admin'))
+      .filter(n => n.role === role && (n.userId === id || role === 'admin'))
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
