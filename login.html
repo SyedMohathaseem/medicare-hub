@@ -633,19 +633,28 @@
             }
           } else {
             // Login
+            console.log('[Login] Attempting login for:', username);
             const user = await MediCareData.validateUserLogin(username, password);
+            console.log('[Login] User validation result:', user);
+            
             if (user) {
+              console.log('[Login] Login successful, setting user ID:', user.id);
               MediCareData.setLoggedInUser(user.id);
               showSuccess('Login successful! Redirecting...');
               setTimeout(() => {
                 redirectAfterLogin();
               }, 1000);
             } else {
+              console.log('[Login] Validation failed, checking if user exists...');
               // Detailed error checking
               const existingUser = await MediCareData.getUserByPhone(username);
+              console.log('[Login] User exists check:', existingUser);
+              
               if (existingUser) {
+                 console.log('[Login] User exists but password wrong');
                  showError('Incorrect password. Please try again.');
               } else {
+                 console.log('[Login] User does not exist');
                  showError('Account not found. Please Sign Up first.');
               }
             }
