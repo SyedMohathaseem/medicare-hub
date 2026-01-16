@@ -87,21 +87,41 @@ function displayStoreInfo(store) {
 
 function setupUpload() {
   const uploadCard = document.getElementById('uploadCard');
-  const imageInput = document.getElementById('imageInput');
+  const cameraBtn = document.getElementById('cameraBtn');
+  const galleryBtn = document.getElementById('galleryBtn');
+  const cameraInput = document.getElementById('cameraInput');
+  const galleryInput = document.getElementById('galleryInput');
   const changeImageBtn = document.getElementById('changeImageBtn');
   
-  // Click to upload
+  // Camera button - opens camera directly
+  if (cameraBtn) {
+    cameraBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent uploadCard click
+      cameraInput.click();
+    });
+  }
+  
+  // Gallery button - opens file picker
+  if (galleryBtn) {
+    galleryBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent uploadCard click
+      galleryInput.click();
+    });
+  }
+  
+  // Upload card click - default to gallery for desktop
   uploadCard.addEventListener('click', () => {
-    imageInput.click();
+    galleryInput.click();
   });
   
   // Change image button
   changeImageBtn.addEventListener('click', () => {
-    imageInput.click();
+    galleryInput.click();
   });
   
-  // File input change
-  imageInput.addEventListener('change', handleImageUpload);
+  // File input change handlers - both use the same handler
+  cameraInput.addEventListener('change', handleImageUpload);
+  galleryInput.addEventListener('change', handleImageUpload);
   
   // Drag and drop
   uploadCard.addEventListener('dragover', (e) => {
