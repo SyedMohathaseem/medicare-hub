@@ -451,6 +451,63 @@ function updateStoreBadge() {
 
 window.showNotifications = showNotifications;
 
+// Security Modal Functions
+function openSecurityModal() {
+  // Pre-fill with current username if exists
+  const storeId = MediCareData.getLoggedInStore();
+  const credentials = MediCareData.getCredentialsByStoreId(storeId);
+  
+  if (credentials) {
+    document.getElementById('newUsername').value = credentials.username || '';
+  }
+  document.getElementById('newPassword').value = '';
+  document.getElementById('confirmPassword').value = '';
+  
+  document.getElementById('securityModal').classList.add('active');
+}
+
+function closeSecurityModal() {
+  document.getElementById('securityModal').classList.remove('active');
+}
+
+function updateStoreCredentials() {
+  const storeId = MediCareData.getLoggedInStore();
+  const newUsername = document.getElementById('newUsername').value.trim();
+  const newPassword = document.getElementById('newPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+  
+  // Validation
+  if (!newUsername) {
+    showToast('Please enter a username', 'error');
+    return;
+  }
+  
+  if (!newPassword) {
+    showToast('Please enter a password', 'error');
+    return;
+  }
+  
+  if (newPassword.length < 4) {
+    showToast('Password must be at least 4 characters', 'error');
+    return;
+  }
+  
+  if (newPassword !== confirmPassword) {
+    showToast('Passwords do not match', 'error');
+    return;
+  }
+  
+  // Update credentials
+  MediCareData.updateStoreCredentials(storeId, newUsername, newPassword);
+  
+  closeSecurityModal();
+  showToast('Credentials updated successfully!', 'success');
+}
+
+window.openSecurityModal = openSecurityModal;
+window.closeSecurityModal = closeSecurityModal;
+window.updateStoreCredentials = updateStoreCredentials;
+
 // Export functions for global access
 window.acceptOrder = acceptOrder;
 window.markDelivered = markDelivered;
