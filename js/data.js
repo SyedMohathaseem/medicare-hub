@@ -407,6 +407,35 @@ function validateStoreLogin(username, password) {
   return store || null;
 }
 
+// Update or Add Store Credentials (used by Super Admin)
+function updateStoreCredentials(storeId, username, password) {
+  const credentials = getStoreCredentials();
+  const existingIndex = credentials.findIndex(cred => cred.storeId === parseInt(storeId));
+  
+  if (existingIndex !== -1) {
+    // Update existing
+    credentials[existingIndex].username = username;
+    credentials[existingIndex].password = password;
+  } else {
+    // Add new
+    credentials.push({
+      storeId: parseInt(storeId),
+      username: username,
+      password: password
+    });
+  }
+  
+  localStorage.setItem('medicare_store_credentials', JSON.stringify(credentials));
+  return { storeId: parseInt(storeId), username, password };
+}
+
+// Get Credentials for a specific store
+function getCredentialsByStoreId(storeId) {
+  const credentials = getStoreCredentials();
+  return credentials.find(cred => cred.storeId === parseInt(storeId)) || null;
+}
+
+
 // Store Status Management (for Admin)
 async function updateStoreStatus(storeId, updates) {
   // Firestore Update
@@ -1179,6 +1208,9 @@ window.MediCareData = {
   validateAdminLogin,
   validateStoreLogin,
   getAdminCredentials,
+  getStoreCredentials,
+  updateStoreCredentials,
+  getCredentialsByStoreId,
   
   // User Auth
   registerUser,

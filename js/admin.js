@@ -127,12 +127,26 @@ function loadStores() {
     // Calculate simple revenue
     const revenue = storeDeliveredOrders.length * 450;
     
+    // Get credentials for this store
+    const creds = MediCareData.getCredentialsByStoreId(store.id);
+    const credsDisplay = creds 
+      ? `<span style="font-family: monospace; font-size: 13px;">${creds.username}</span>` 
+      : `<span style="color: var(--warning);">⚠ Not Set</span>`;
+    
     return `
     <tr>
       <td>
         <strong style="color: var(--gray-900);">${store.name}</strong>
       </td>
       <td>${store.area}, ${store.city}</td>
+      <td>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          ${credsDisplay}
+          <button class="table-btn" style="background: var(--accent); color: white; font-size: 11px; padding: 4px 8px;" onclick="openCredentialModal(${store.id}, '${store.name.replace(/'/g, "\\'")}')">
+            Set Login
+          </button>
+        </div>
+      </td>
       <td>
         <span style="font-weight: 600; color:var(--primary-dark);">₹${revenue.toLocaleString('en-IN')}</span>
       </td>
@@ -144,11 +158,6 @@ function loadStores() {
       <td>
         <span style="color: ${store.isVerified ? 'var(--success)' : 'var(--gray-400)'};">
           ${store.isVerified ? '✓ Verified' : '○ Pending'}
-        </span>
-      </td>
-      <td>
-        <span style="color: ${store.deliveringToday ? 'var(--success)' : 'var(--gray-400)'};">
-          ${store.deliveringToday ? '✓ Yes' : '○ No'}
         </span>
       </td>
       <td>
@@ -430,6 +439,55 @@ function showNotifications() {
 
 window.showNotifications = showNotifications;
 
+// Credential Modal Functions
+function openCredentialModal(storeId, storeName) {
+  document.getElementById('credentialStoreId').value = storeId;
+  document.getElementById('credentialStoreName').textContent = storeName;
+  
+  // Load existing credentials if any
+  const existingCreds = MediCareData.getCredentialsByStoreId(storeId);
+  if (existingCreds) {
+    document.getElementById('credentialUsername').value = existingCreds.username;
+    document.getElementById('credentialPassword').value = existingCreds.password;
+  } else {
+    document.getElementById('credentialUsername').value = '';
+    document.getElementById('credentialPassword').value = '';
+  }
+  
+  document.getElementById('credentialModal').classList.add('active');
+}
+
+function closeCredentialModal() {
+  document.getElementById('credentialModal').classList.remove('active');
+  document.getElementById('credentialStoreId').value = '';
+  document.getElementById('credentialUsername').value = '';
+  document.getElementById('credentialPassword').value = '';
+}
+
+function saveStoreCredentials() {
+  const storeId = document.getElementById('credentialStoreId').value;
+  const username = document.getElementById('credentialUsername').value.trim();
+  const password = document.getElementById('credentialPassword').value.trim();
+  
+  if (!username || !password) {
+    showToast('Please fill both username and password', 'error');
+    return;
+  }
+  
+  // Check for minimum length
+  if (username.length < 3 || password.length < 4) {
+    showToast('Username must be at least 3 characters, password at least 4', 'error');
+    return;
+  }
+  
+  // Save credentials
+  MediCareData.updateStoreCredentials(storeId, username, password);
+  
+  closeCredentialModal();
+  loadStores();
+  showToast('Store credentials saved successfully!', 'success');
+}
+
 // Export functions for global access
 window.verifyStore = verifyStore;
 window.toggleStoreStatus = toggleStoreStatus;
@@ -438,3 +496,6 @@ window.openAddStoreModal = openAddStoreModal;
 window.closeAddStoreModal = closeAddStoreModal;
 window.addNewStore = addNewStore;
 window.showSection = showSection;
+window.openCredentialModal = openCredentialModal;
+window.closeCredentialModal = closeCredentialModal;
+window.saveStoreCredentials = saveStoreCredentials;

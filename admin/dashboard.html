@@ -184,10 +184,10 @@
               <tr>
                 <th>Store Name</th>
                 <th>Area</th>
+                <th>Credentials</th>
                 <th>Revenue</th>
                 <th>Status</th>
                 <th>Verified</th>
-                <th>Delivering Today</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -270,6 +270,48 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeAddStoreModal()">Cancel</button>
         <button class="btn btn-primary" onclick="addNewStore()">Add Store</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Set Credentials Modal -->
+  <div class="modal-overlay" id="credentialModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Set Store Admin Credentials</h3>
+        <button class="modal-close" onclick="closeCredentialModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="credentialStoreId">
+        <div class="form-group">
+          <label class="form-label">Store Name</label>
+          <p id="credentialStoreName" style="font-weight: 600; color: var(--gray-800);"></p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="credentialUsername">Username</label>
+          <input type="text" class="form-input" id="credentialUsername" placeholder="Enter username for store login">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="credentialPassword">Password</label>
+          <input type="text" class="form-input" id="credentialPassword" placeholder="Enter password for store login">
+        </div>
+        <div class="ai-message info" style="margin-top: var(--space-4);">
+          <div class="ai-message-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </div>
+          <div class="ai-message-content">
+            <p>Store admin will use these credentials to login to their dashboard.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeCredentialModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveStoreCredentials()">Save Credentials</button>
       </div>
     </div>
   </div>
