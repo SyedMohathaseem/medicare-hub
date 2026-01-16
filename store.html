@@ -278,6 +278,18 @@
       document.getElementById('mobileProfileModal').classList.remove('show');
     }
 
+    // Handle Logout
+    async function handleLogout() {
+      console.log('[Logout] Logging out user...');
+      MediCareData.logoutUser();
+      closeMobileProfile();
+      
+      // Update the navigation to show "Login" instead of "Profile"
+      await updateAuthNav();
+      
+      console.log('[Logout] User logged out successfully');
+    }
+
     // Robust Click Handler
     async function handleMobileProfileClick(e) {
       e.preventDefault();
