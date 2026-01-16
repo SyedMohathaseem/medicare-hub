@@ -25,16 +25,24 @@ function initializeStoreDashboard() {
     return;
   }
   
-  // Load store info
-  const store = MediCareData.getStoreById(currentStoreId);
+  // Load store info using sync localStorage
+  const stores = MediCareData.getLocalStores();
+  const store = stores.find(s => s.id === parseInt(currentStoreId));
   if (store) {
     document.getElementById('storeName').textContent = store.name + ' Dashboard';
+  } else {
+    document.getElementById('storeName').textContent = 'Store Dashboard';
   }
   
   // Load orders
   loadOrders();
   
-  // Real-time updates
+  // Real-time updates - polling every 2 seconds
+  setInterval(() => {
+    loadOrders();
+  }, 2000);
+  
+  // Also listen for storage events
   window.addEventListener('storage', (e) => {
     if (e.key === 'medicare_orders') {
       loadOrders();
@@ -45,8 +53,10 @@ function initializeStoreDashboard() {
   });
 }
 
-async function loadOrders() {
-  const orders = await MediCareData.getOrdersByStore(currentStoreId);
+function loadOrders() {
+  // Use sync localStorage for reliable data
+  const allOrders = JSON.parse(localStorage.getItem('medicare_orders') || '[]');
+  const orders = allOrders.filter(o => o.storeId === parseInt(currentStoreId));
   
   // Check for new orders
   if (lastOrderCount !== -1 && orders.length > lastOrderCount) {
@@ -60,17 +70,19 @@ async function loadOrders() {
   const tableBody = document.getElementById('ordersTableBody');
   const emptyState = document.getElementById('emptyState');
   
+  if (!tableBody) return;
+  
   // Update stats
   updateStats(orders);
   
   // Check if no orders
   if (orders.length === 0) {
     tableBody.innerHTML = '';
-    emptyState.style.display = 'block';
+    if (emptyState) emptyState.style.display = 'block';
     return;
   }
   
-  emptyState.style.display = 'none';
+  if (emptyState) emptyState.style.display = 'none';
   
   // Sort orders by date (newest first)
   orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
