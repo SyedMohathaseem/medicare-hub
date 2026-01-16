@@ -253,6 +253,7 @@
       if (!user) user = await MediCareData.getLoggedInUser();
       
       console.log('Mobile Profile User Data:', user); // Debug log
+      alert('Debug User Data: ' + JSON.stringify(user)); // Debug log
       
       if (user) {
          const userName = user.name || user.fullName || 'Valued Customer';
