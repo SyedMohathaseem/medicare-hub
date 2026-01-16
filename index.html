@@ -540,6 +540,9 @@
         }
       });
       
+      // CRITICAL: Update auth nav on page load to set correct icon
+      updateAuthNav();
+    
       // Sync badges
       const desktopBadge = document.getElementById('userNotiBadge');
       const mobileBadge = document.getElementById('mobileNotiBadge');

@@ -373,11 +373,14 @@
       
       navItems.forEach(item => {
         const href = item.getAttribute('href');
-        if (currentPath.includes(href) && href !== '#' && href !== 'index.html#stores') {
+        if (href && (currentPath.includes(href) || (href === 'store.html' && currentPath.includes('store')))) {
           navItems.forEach(nav => nav.classList.remove('active'));
           item.classList.add('active');
         }
       });
+      
+      // CRITICAL: Update auth nav on page load to set correct icon
+      updateAuthNav();
       
       // Sync badges
       const desktopBadge = document.getElementById('userNotiBadge');
