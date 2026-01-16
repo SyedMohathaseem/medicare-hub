@@ -1202,6 +1202,51 @@ const MediCareNotifications = {
   }
 };
 
+// Background Firebase Sync - Stale While Revalidate Pattern
+async function syncFromFirebase() {
+  if (!isFirestoreReady()) return;
+  
+  try {
+    // Sync Orders - Merge Firebase orders into localStorage
+    const snapshot = await db.collection('orders').get();
+    const firebaseOrders = snapshot.docs.map(doc => doc.data());
+    const localOrders = JSON.parse(localStorage.getItem('medicare_orders') || '[]');
+    
+    // Merge: prefer newer updatedAt timestamp
+    const orderMap = new Map();
+    
+    // Add local orders first
+    localOrders.forEach(o => orderMap.set(o.id, o));
+    
+    // Merge Firebase orders (overwrite if newer)
+    firebaseOrders.forEach(fo => {
+      const local = orderMap.get(fo.id);
+      if (!local || new Date(fo.updatedAt) > new Date(local.updatedAt)) {
+        orderMap.set(fo.id, fo);
+      }
+    });
+    
+    const mergedOrders = Array.from(orderMap.values());
+    localStorage.setItem('medicare_orders', JSON.stringify(mergedOrders));
+    
+    // Trigger storage event for UI updates
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'medicare_orders',
+      newValue: JSON.stringify(mergedOrders)
+    }));
+    
+    console.log('Firebase sync complete:', mergedOrders.length, 'orders');
+  } catch (e) {
+    console.warn('Background sync error:', e);
+  }
+}
+
+// Auto-sync every 30 seconds
+setInterval(syncFromFirebase, 30000);
+
+// Initial sync after 2 seconds
+setTimeout(syncFromFirebase, 2000);
+
 // Export for use in other files
 window.MediCareData = {
   // Stores
