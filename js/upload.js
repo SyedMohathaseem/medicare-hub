@@ -93,18 +93,42 @@ function setupUpload() {
   const galleryInput = document.getElementById('galleryInput');
   const changeImageBtn = document.getElementById('changeImageBtn');
   
-  // Camera button - opens camera directly
+  // Detect if mobile device
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Camera button - opens camera directly on mobile
   if (cameraBtn) {
     cameraBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent uploadCard click
-      cameraInput.click();
+      e.preventDefault();
+      e.stopPropagation();
+      
+      if (isMobile) {
+        // For mobile: Create a fresh input element to ensure camera opens
+        // Some browsers cache the input behavior, so recreating ensures camera opens
+        const tempInput = document.createElement('input');
+        tempInput.type = 'file';
+        tempInput.accept = 'image/*';
+        tempInput.capture = 'environment'; // 'environment' for back camera, 'user' for front
+        tempInput.style.display = 'none';
+        tempInput.addEventListener('change', handleImageUpload);
+        document.body.appendChild(tempInput);
+        tempInput.click();
+        // Clean up after use
+        tempInput.addEventListener('change', () => {
+          setTimeout(() => tempInput.remove(), 1000);
+        });
+      } else {
+        // Desktop: use regular file picker since no camera
+        galleryInput.click();
+      }
     });
   }
   
-  // Gallery button - opens file picker
+  // Gallery button - opens file picker (no capture attribute = gallery/files)
   if (galleryBtn) {
     galleryBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent uploadCard click
+      e.preventDefault();
+      e.stopPropagation();
       galleryInput.click();
     });
   }
