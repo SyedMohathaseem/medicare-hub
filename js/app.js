@@ -182,7 +182,9 @@ window.showUserNotifications = async function() {
     return;
   }
   
-  const notis = MediCareData.getUserNotifications('user', user.phone);
+  // Use sync localStorage directly
+  const allNotis = JSON.parse(localStorage.getItem('medicare_notis_data') || '[]');
+  const notis = allNotis.filter(n => n.role === 'user' && n.userId === user.phone);
   
   const overlay = document.createElement('div');
   overlay.style.cssText = `
@@ -300,7 +302,9 @@ async function updateCustomerBadge() {
   const user = await MediCareData.getLoggedInUser();
   if (!user) return;
 
-  const notis = MediCareData.getUserNotifications('user', user.phone);
+  // Use sync localStorage directly
+  const allNotis = JSON.parse(localStorage.getItem('medicare_notis_data') || '[]');
+  const notis = allNotis.filter(n => n.role === 'user' && n.userId === user.phone);
   
   // Check for new notifications to trigger alert
   if (lastCustomerNotiCount !== -1 && notis.length > lastCustomerNotiCount) {
