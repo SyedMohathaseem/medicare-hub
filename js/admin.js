@@ -49,8 +49,9 @@ function initializeAdminDashboard() {
 }
 
 function refreshDashboardData(silent = false) {
-    const orders = MediCareData.getOrders();
-    const stores = MediCareData.getStores();
+    // Use sync localStorage for reliable data access
+    const orders = JSON.parse(localStorage.getItem('medicare_orders') || '[]');
+    const stores = MediCareData.getLocalStores();
     
     // Check for new orders
     if (lastOrderCount !== -1 && orders.length > lastOrderCount) {
@@ -61,10 +62,6 @@ function refreshDashboardData(silent = false) {
        updateNotificationBadge();
     }
     
-    // Only update if data changed (optimization could go here, but for now we reload)
-    // In a real app we would diff the data. For now, we trust the browser render speed.
-    // However, to avoid flickering inputs (not present here), we can just wipe and redraw.
-    
     // Update internal counters
     if (orders.length !== lastOrderCount) {
          lastOrderCount = orders.length;
@@ -73,9 +70,7 @@ function refreshDashboardData(silent = false) {
          loadAnalytics();
     }
     
-    // For stores, we don't have a change tracker yet, so we just reload if needed.
-    // Or we can just reload every time for "fully realtime".
-    // Let's reload everything to be safe as per user request.
+    // Reload stores and analytics
     loadStores(); 
     loadAnalytics();
 }
@@ -99,27 +94,47 @@ function updateNotificationBadge() {
 }
 
 function loadAnalytics() {
-  const analytics = MediCareData.getAnalytics();
+  // Use sync functions for immediate data
+  const stores = MediCareData.getLocalStores();
+  const orders = JSON.parse(localStorage.getItem('medicare_orders') || '[]');
+  
+  const totalStores = stores.length;
+  const verifiedStores = stores.filter(s => s.isVerified).length;
+  const activeStores = stores.filter(s => s.isOpen).length;
+  
+  const totalOrders = orders.length;
+  const pendingOrders = orders.filter(o => o.status === 'pending').length;
+  const acceptedOrders = orders.filter(o => o.status === 'accepted').length;
+  const deliveredOrders = orders.filter(o => o.status === 'delivered').length;
+  const rejectedOrders = orders.filter(o => o.status === 'rejected').length;
   
   // Store stats
-  document.getElementById('totalStores').textContent = analytics.stores.total;
-  document.getElementById('verifiedStores').textContent = analytics.stores.verified;
-  document.getElementById('activeStores').textContent = analytics.stores.active;
+  document.getElementById('totalStores').textContent = totalStores;
+  document.getElementById('verifiedStores').textContent = verifiedStores;
+  document.getElementById('activeStores').textContent = activeStores;
   
   // Order stats
-  document.getElementById('totalOrders').textContent = analytics.orders.total;
-  document.getElementById('pendingOrders').textContent = analytics.orders.pending;
-  document.getElementById('acceptedOrders').textContent = analytics.orders.accepted;
-  document.getElementById('deliveredOrders').textContent = analytics.orders.delivered;
-  document.getElementById('rejectedOrders').textContent = analytics.orders.rejected;
+  document.getElementById('totalOrders').textContent = totalOrders;
+  document.getElementById('pendingOrders').textContent = pendingOrders;
+  document.getElementById('acceptedOrders').textContent = acceptedOrders;
+  document.getElementById('deliveredOrders').textContent = deliveredOrders;
+  document.getElementById('rejectedOrders').textContent = rejectedOrders;
 }
 
 function loadStores() {
-  const stores = MediCareData.getStores();
+  // Use sync local stores for immediate display
+  const stores = MediCareData.getLocalStores();
   const tableBody = document.getElementById('storesTableBody');
   
+  if (!tableBody) return;
+  
   // Calculate Revenue (Mock: Delivered * ₹450)
-  const allOrders = MediCareData.getOrders();
+  const allOrders = JSON.parse(localStorage.getItem('medicare_orders') || '[]');
+  
+  if (stores.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--gray-500);">No stores found. Add a store to get started.</td></tr>';
+    return;
+  }
   
   tableBody.innerHTML = stores.map(store => {
     // Filter orders for this store
@@ -172,20 +187,23 @@ function loadStores() {
 }
 
 function loadOrders() {
-  const orders = MediCareData.getOrders();
+  // Use sync localStorage for immediate display
+  const orders = JSON.parse(localStorage.getItem('medicare_orders') || '[]');
   
   if (lastOrderCount === -1) lastOrderCount = orders.length;
 
   const tableBody = document.getElementById('ordersTableBody');
   const emptyState = document.getElementById('emptyOrdersState');
   
+  if (!tableBody) return;
+  
   if (orders.length === 0) {
     tableBody.innerHTML = '';
-    emptyState.style.display = 'block';
+    if (emptyState) emptyState.style.display = 'block';
     return;
   }
   
-  emptyState.style.display = 'none';
+  if (emptyState) emptyState.style.display = 'none';
   
   // Sort by date (newest first)
   orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -197,7 +215,7 @@ function loadOrders() {
     return `
       <tr>
         <td><strong>${order.id}</strong></td>
-        <td>${order.storeName}</td>
+        <td>${order.storeName || 'Unknown'}</td>
         <td>${orderType}</td>
         <td>
           <span class="status-badge status-${order.status}">
@@ -214,11 +232,19 @@ function loadOrders() {
 }
 
 function loadRejectionAnalytics() {
-  const analytics = MediCareData.getAnalytics();
+  // Use sync localStorage
+  const orders = JSON.parse(localStorage.getItem('medicare_orders') || '[]');
   const container = document.getElementById('rejectionAnalytics');
   
-  const reasons = analytics.rejectionReasons;
-  const reasonKeys = Object.keys(reasons);
+  if (!container) return;
+  
+  // Build rejection reasons from orders
+  const rejectionReasons = {};
+  orders.filter(o => o.rejectionReason).forEach(order => {
+    rejectionReasons[order.rejectionReason] = (rejectionReasons[order.rejectionReason] || 0) + 1;
+  });
+  
+  const reasonKeys = Object.keys(rejectionReasons);
   
   if (reasonKeys.length === 0) {
     container.innerHTML = '<p style="color: var(--gray-500);">No rejection data available yet</p>';
@@ -226,13 +252,13 @@ function loadRejectionAnalytics() {
   }
   
   // Sort by count
-  reasonKeys.sort((a, b) => reasons[b] - reasons[a]);
+  reasonKeys.sort((a, b) => rejectionReasons[b] - rejectionReasons[a]);
   
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: var(--space-3);">
       ${reasonKeys.map(reason => {
-        const count = reasons[reason];
-        const maxCount = Math.max(...Object.values(reasons));
+        const count = rejectionReasons[reason];
+        const maxCount = Math.max(...Object.values(rejectionReasons));
         const percentage = (count / maxCount) * 100;
         
         return `
