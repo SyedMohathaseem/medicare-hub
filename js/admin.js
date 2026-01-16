@@ -81,11 +81,13 @@ function refreshDashboardData(silent = false) {
 function updateNotificationBadge() {
   const badge = document.getElementById('notiBadge');
   if (badge) {
-     const notis = MediCareData.getUserNotifications('admin', 'admin');
+     // Use sync localStorage directly
+     const allNotis = JSON.parse(localStorage.getItem('medicare_notis_data') || '[]');
+     const notis = allNotis.filter(n => n.role === 'admin');
      const unread = notis.filter(n => !n.read).length;
      
      if (unread > 0) {
-       badge.style.display = 'flex'; // Changed to flex to center content
+       badge.style.display = 'flex';
        badge.textContent = unread > 99 ? '99+' : unread;
      } else {
        badge.style.display = 'none';
@@ -410,7 +412,9 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 
 // Notification History UI
 function showNotifications() {
-  const notis = MediCareData.getUserNotifications('admin', 'admin');
+  // Use sync localStorage directly
+  const allNotis = JSON.parse(localStorage.getItem('medicare_notis_data') || '[]');
+  const notis = allNotis.filter(n => n.role === 'admin');
   
   const overlay = document.createElement('div');
   overlay.style.cssText = `
