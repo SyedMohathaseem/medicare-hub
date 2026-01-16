@@ -373,7 +373,10 @@ function showPushNotification() {
 
 // Notification History UI
 function showNotifications() {
-  const notis = MediCareData.getUserNotifications('store', MediCareData.getLoggedInStore());
+  const storeId = MediCareData.getLoggedInStore();
+  // Use sync localStorage directly
+  const allNotis = JSON.parse(localStorage.getItem('medicare_notis_data') || '[]');
+  const notis = allNotis.filter(n => n.role === 'store' && n.userId == storeId);
   
   const overlay = document.createElement('div');
   overlay.style.cssText = `
@@ -430,7 +433,9 @@ function updateStoreBadge() {
   const storeId = MediCareData.getLoggedInStore();
   if (!storeId) return;
 
-  const notis = MediCareData.getUserNotifications('store', storeId);
+  // Use sync localStorage directly instead of async function
+  const allNotis = JSON.parse(localStorage.getItem('medicare_notis_data') || '[]');
+  const notis = allNotis.filter(n => n.role === 'store' && n.userId == storeId);
   const unread = notis.filter(n => !n.read).length;
   const badge = document.getElementById('storeNotiBadge');
   
