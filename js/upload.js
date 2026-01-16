@@ -87,44 +87,11 @@ function displayStoreInfo(store) {
 
 function setupUpload() {
   const uploadCard = document.getElementById('uploadCard');
-  const cameraBtn = document.getElementById('cameraBtn');
   const galleryBtn = document.getElementById('galleryBtn');
-  const cameraInput = document.getElementById('cameraInput');
   const galleryInput = document.getElementById('galleryInput');
   const changeImageBtn = document.getElementById('changeImageBtn');
   
-  // Detect if mobile device
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  
-  // Camera button - opens camera directly on mobile
-  if (cameraBtn) {
-    cameraBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      if (isMobile) {
-        // For mobile: Create a fresh input element to ensure camera opens
-        // Some browsers cache the input behavior, so recreating ensures camera opens
-        const tempInput = document.createElement('input');
-        tempInput.type = 'file';
-        tempInput.accept = 'image/*';
-        tempInput.capture = 'environment'; // 'environment' for back camera, 'user' for front
-        tempInput.style.display = 'none';
-        tempInput.addEventListener('change', handleImageUpload);
-        document.body.appendChild(tempInput);
-        tempInput.click();
-        // Clean up after use
-        tempInput.addEventListener('change', () => {
-          setTimeout(() => tempInput.remove(), 1000);
-        });
-      } else {
-        // Desktop: use regular file picker since no camera
-        galleryInput.click();
-      }
-    });
-  }
-  
-  // Gallery button - opens file picker (no capture attribute = gallery/files)
+  // Gallery button - opens file picker
   if (galleryBtn) {
     galleryBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -133,8 +100,10 @@ function setupUpload() {
     });
   }
   
-  // Upload card click - default to gallery for desktop
-  uploadCard.addEventListener('click', () => {
+  // Upload card click - opens file picker
+  uploadCard.addEventListener('click', (e) => {
+    // Don't trigger if clicking the gallery button itself
+    if (e.target.closest('.gallery-upload-btn')) return;
     galleryInput.click();
   });
   
@@ -143,8 +112,7 @@ function setupUpload() {
     galleryInput.click();
   });
   
-  // File input change handlers - both use the same handler
-  cameraInput.addEventListener('change', handleImageUpload);
+  // File input change handler
   galleryInput.addEventListener('change', handleImageUpload);
   
   // Drag and drop

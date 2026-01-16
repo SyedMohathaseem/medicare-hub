@@ -83,24 +83,15 @@
         <h3 class="upload-title">Tap to Upload Image</h3>
         <p class="upload-subtitle">or drag and drop your file here</p>
         <div class="upload-options">
-          <span class="upload-option" id="cameraBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
-            Camera
-          </span>
-          <span class="upload-option" id="galleryBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button type="button" class="gallery-upload-btn" id="galleryBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
               <circle cx="8.5" cy="8.5" r="1.5"/>
               <polyline points="21 15 16 10 5 21"/>
             </svg>
-            Gallery
-          </span>
+            Choose from Gallery
+          </button>
         </div>
-        <!-- Two separate inputs: one for camera, one for gallery -->
-        <input type="file" id="cameraInput" accept="image/*" capture="camera" hidden>
         <input type="file" id="galleryInput" accept="image/*" hidden>
       </div>
 

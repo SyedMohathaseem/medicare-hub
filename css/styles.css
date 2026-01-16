@@ -632,6 +632,59 @@ p {
   color: var(--gray-600);
 }
 
+/* Gallery Upload Button - Main Upload Button */
+.gallery-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  min-height: 56px;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: var(--white);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-upload-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-upload-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+}
+
+.gallery-upload-btn:hover::before {
+  opacity: 1;
+}
+
+.gallery-upload-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.gallery-upload-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.gallery-upload-btn:hover svg {
+  transform: scale(1.1);
+}
+
 /* Upload Preview */
 .upload-preview {
   margin-top: var(--space-6);
