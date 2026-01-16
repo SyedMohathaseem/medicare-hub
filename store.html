@@ -249,11 +249,12 @@
   </div>
 
   <script>
-    async function openMobileProfile() {
-      const user = await MediCareData.getLoggedInUser();
+    async function openMobileProfile(user) {
+      if (!user) user = await MediCareData.getLoggedInUser();
+      
       if (user) {
-        document.getElementById('mobileProfileName').textContent = user.name;
-        document.getElementById('mobileProfilePhone').textContent = user.phone;
+        document.getElementById('mobileProfileName').textContent = user.name || 'Valued Customer';
+        document.getElementById('mobileProfilePhone').textContent = user.phone || '';
       }
       document.getElementById('mobileProfileModal').classList.add('show');
     }
@@ -270,7 +271,7 @@
       const user = await MediCareData.getLoggedInUser();
       
       if (user) {
-        openMobileProfile();
+        openMobileProfile(user);
       } else {
         window.location.href = 'login.html';
       }
@@ -309,8 +310,8 @@
              </svg>`;
            mobileProfileLink.querySelector('span').textContent = 'Profile';
            
-           if(mobileProfileName) mobileProfileName.textContent = user.name;
-           if(mobileProfilePhone) mobileProfilePhone.textContent = user.phone;
+           if(mobileProfileName) mobileProfileName.textContent = user.name || 'Valued Customer';
+           if(mobileProfilePhone) mobileProfilePhone.textContent = user.phone || '';
         }
       } else {
         // Desktop
