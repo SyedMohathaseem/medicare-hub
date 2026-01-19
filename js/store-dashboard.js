@@ -71,28 +71,69 @@ function loadOrders() {
   // Update Badge
   updateStoreBadge();
 
-  const tableBody = document.getElementById('ordersTableBody');
-  const emptyState = document.getElementById('emptyState');
-  
-  if (!tableBody) return;
-  
   // Update stats
   updateStats(orders);
   
-  // Check if no orders
-  if (orders.length === 0) {
-    tableBody.innerHTML = '';
-    if (emptyState) emptyState.style.display = 'block';
-    return;
+  // Split orders by status
+  const pendingOrders = orders.filter(o => o.status === 'pending' || o.status === 'accepted');
+  const completedOrders = orders.filter(o => o.status === 'completed' || o.status === 'delivered');
+
+  // Populate Pending Table
+  const pendingTableBody = document.getElementById('pendingTableBody');
+  const pendingEmptyState = document.getElementById('pendingEmptyState');
+  if (pendingTableBody) {
+    if (pendingOrders.length === 0) {
+      pendingTableBody.innerHTML = '';
+      if (pendingEmptyState) pendingEmptyState.style.display = 'block';
+    } else {
+      if (pendingEmptyState) pendingEmptyState.style.display = 'none';
+      pendingOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      pendingTableBody.innerHTML = pendingOrders.map(order => createOrderRow(order)).join('');
+    }
   }
-  
-  if (emptyState) emptyState.style.display = 'none';
-  
-  // Sort orders by date (newest first)
-  orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  
-  // Render orders
-  tableBody.innerHTML = orders.map(order => createOrderRow(order)).join('');
+
+  // Populate Completed Table
+  const completedTableBody = document.getElementById('completedTableBody');
+  const completedEmptyState = document.getElementById('completedEmptyState');
+  if (completedTableBody) {
+    if (completedOrders.length === 0) {
+      completedTableBody.innerHTML = '';
+      if (completedEmptyState) completedEmptyState.style.display = 'block';
+    } else {
+      if (completedEmptyState) completedEmptyState.style.display = 'none';
+      completedOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      completedTableBody.innerHTML = completedOrders.map(order => createOrderRow(order)).join('');
+    }
+  }
+}
+
+function showSection(sectionId) {
+  // Sections to manage
+  const sections = ['dashboardSection', 'pendingSection', 'ordersSection'];
+  const navIds = ['nav-dashboard', 'nav-pending', 'nav-orders'];
+
+  // Hide all sections
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  // Remove active class from all nav items
+  navIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+
+  // Show target section
+  const targetSection = document.getElementById(sectionId + 'Section');
+  if (targetSection) targetSection.style.display = 'block';
+
+  // Set active class on target nav item
+  const targetNav = document.getElementById('nav-' + sectionId);
+  if (targetNav) targetNav.classList.add('active');
+
+  // Trigger load if switching (already happens via interval, but good for immediate update)
+  loadOrders();
 }
 
 function updateStats(orders) {
@@ -646,3 +687,4 @@ window.openBillingModal = openBillingModal;
 window.closeBillingModal = closeBillingModal;
 window.calculateFinalBill = calculateFinalBill;
 window.confirmBilling = confirmBilling;
+window.showSection = showSection;

@@ -31,7 +31,7 @@
       </div>
       
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="sidebar-link active">
+        <a href="#" class="sidebar-link active" id="nav-dashboard" onclick="showSection('dashboard'); return false;">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="9"/>
             <rect x="14" y="3" width="7" height="5"/>
@@ -39,6 +39,18 @@
             <rect x="3" y="16" width="7" height="5"/>
           </svg>
           Dashboard
+        </a>
+        <a href="#" class="sidebar-link" id="nav-pending" onclick="showSection('pending'); return false;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+          Pending
+        </a>
+        <a href="#" class="sidebar-link" id="nav-orders" onclick="showSection('orders'); return false;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          Orders
         </a>
         <a href="#" class="sidebar-link" onclick="openSecurityModal(); return false;">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -98,86 +110,116 @@
         </div>
       </div>
 
-      <!-- Stats Grid -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon orange">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
+      <!-- Dashboard Overview (Stats) -->
+      <div id="dashboardSection">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="pendingCount">0</div>
+            <div class="stat-label">Pending Orders</div>
           </div>
-          <div class="stat-value" id="pendingCount">0</div>
-          <div class="stat-label">Pending Orders</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-icon blue">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m9 12 2 2 4-4"/>
-              <circle cx="12" cy="12" r="10"/>
-            </svg>
+          
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m9 12 2 2 4-4"/>
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="acceptedCount">0</div>
+            <div class="stat-label">Accepted</div>
           </div>
-          <div class="stat-value" id="acceptedCount">0</div>
-          <div class="stat-label">Accepted</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-icon green">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
+          
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="deliveredCount">0</div>
+            <div class="stat-label">Delivered</div>
           </div>
-          <div class="stat-value" id="deliveredCount">0</div>
-          <div class="stat-label">Delivered</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-icon purple">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="4" width="20" height="16" rx="2"/>
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-            </svg>
+          
+          <div class="stat-card">
+            <div class="stat-icon purple">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="totalCount">0</div>
+            <div class="stat-label">Total Orders</div>
           </div>
-          <div class="stat-value" id="totalCount">0</div>
-          <div class="stat-label">Total Orders</div>
         </div>
       </div>
 
-      <!-- Orders Table -->
-      <div class="orders-table">
-        <div class="table-header">
-          <h3 class="table-title">Recent Orders</h3>
-        </div>
-        
-        <div class="table-content">
-          <table>
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Image</th>
-                <th>Type</th>
-                <th>Customer</th>
-                <th>AI Hint</th>
-                <th>Status</th>
-                <th>Time</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ordersTableBody">
-              <!-- Orders will be dynamically loaded -->
-            </tbody>
-          </table>
-        </div>
-        
-        <!-- Empty State -->
-        <div id="emptyState" class="text-center p-6" style="display: none;">
-          <div style="width: 80px; height: 80px; margin: 0 auto; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px;">
-            📦
+      <!-- Pending Orders Section -->
+      <div id="pendingSection" style="display: none;">
+        <div class="orders-table">
+          <div class="table-header">
+            <h3 class="table-title">⏳ Pending Orders</h3>
           </div>
-          <h4 style="margin-top: var(--space-4); color: var(--gray-700);">No orders yet</h4>
-          <p style="color: var(--gray-500);">Orders will appear here when customers place them</p>
+          <div class="table-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Image</th>
+                  <th>Type</th>
+                  <th>Customer</th>
+                  <th>AI Hint</th>
+                  <th>Status</th>
+                  <th>Time</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pendingTableBody">
+                <!-- Pending orders will be dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+          <div id="pendingEmptyState" class="text-center p-6" style="display: none;">
+            <div style="width: 80px; height: 80px; margin: 0 auto; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px;">⏳</div>
+            <h4 style="margin-top: var(--space-4); color: var(--gray-700);">No pending orders</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed Orders Section -->
+      <div id="ordersSection" style="display: none;">
+        <div class="orders-table">
+          <div class="table-header">
+            <h3 class="table-title">📦 Completed Orders</h3>
+          </div>
+          <div class="table-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Image</th>
+                  <th>Type</th>
+                  <th>Customer</th>
+                  <th>AI Hint</th>
+                  <th>Status</th>
+                  <th>Time</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="completedTableBody">
+                <!-- Completed orders will be dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+          <div id="completedEmptyState" class="text-center p-6" style="display: none;">
+            <div style="width: 80px; height: 80px; margin: 0 auto; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px;">📦</div>
+            <h4 style="margin-top: var(--space-4); color: var(--gray-700);">No completed orders</h4>
+          </div>
         </div>
       </div>
     </main>
