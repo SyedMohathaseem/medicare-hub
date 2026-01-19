@@ -107,10 +107,16 @@ function setupUpload() {
       e.preventDefault();
       e.stopPropagation();
       
-      // Hide upload card, show form fields directly
-      document.getElementById('uploadCard').style.display = 'none';
-      showAIMessage('info', 'Text-Only Prescription', 'Please type your prescription details below. You can also add an image later if needed.');
-      showOrderFormFields();
+      // Hide entire upload methods container
+      const methodsContainer = document.getElementById('uploadMethodsContainer');
+      if (methodsContainer) methodsContainer.style.display = 'none';
+      
+      // Also hide OR divider
+      const orDivider = document.querySelector('.or-divider-mobile');
+      if (orDivider) orDivider.style.display = 'none';
+      
+      showAIMessage('info', 'Text-Only Prescription', 'Please type your prescription details below.');
+      showOrderFormFields('text');
     });
   }
   
@@ -173,7 +179,13 @@ function processImage(file) {
     
     // Show preview
     document.getElementById('previewImage').src = uploadedImageData;
-    document.getElementById('uploadCard').style.display = 'none';
+    
+    // Hide entire upload methods container (both cards)
+    const methodsContainer = document.getElementById('uploadMethodsContainer');
+    if (methodsContainer) methodsContainer.style.display = 'none';
+    const orDivider = document.querySelector('.or-divider-mobile');
+    if (orDivider) orDivider.style.display = 'none';
+    
     document.getElementById('uploadPreview').classList.add('active');
     
     // Simulate AI verification (runs in background)
@@ -221,17 +233,66 @@ async function runAIVerification(file) {
   
   // Show note section and action buttons if verification passed
   if (aiVerificationPassed) {
-    showOrderFormFields();
+    showOrderFormFields('image');
   }
 }
 
 // Show order form fields (used by both image upload and text-only paths)
-async function showOrderFormFields() {
+// Mode: 'text' = text-only prescription, 'image' = image upload
+async function showOrderFormFields(mode = 'both') {
   document.getElementById('phoneSection').style.display = 'block';
   document.getElementById('addressSection').style.display = 'block';
   document.getElementById('noteSection').style.display = 'block';
-  document.getElementById('prescriptionTextSection').style.display = 'block';
   document.getElementById('actionButtons').style.display = 'grid';
+  
+  const prescriptionTextSection = document.getElementById('prescriptionTextSection');
+  const uploadBuyBtn = document.getElementById('uploadBuyBtn');
+  
+  if (mode === 'text') {
+    // Text-only mode: show prescription text area (required), hide image preview, change button to "Submit & Buy"
+    prescriptionTextSection.style.display = 'block';
+    
+    // Make prescription text required (change label)
+    const label = prescriptionTextSection.querySelector('.form-label');
+    if (label) {
+      label.innerHTML = 'Prescription Details <span style="color: var(--error);">*</span>';
+    }
+    
+    // Hide the tip message since this is the only input method
+    const tipMsg = prescriptionTextSection.querySelector('p');
+    if (tipMsg) tipMsg.style.display = 'none';
+    
+    // Change button text to "Submit & Buy"
+    if (uploadBuyBtn) {
+      uploadBuyBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 11 12 14 22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        SUBMIT & BUY
+      `;
+    }
+    
+  } else if (mode === 'image') {
+    // Image mode: hide prescription text area, keep image preview, button stays "Upload & Buy"
+    prescriptionTextSection.style.display = 'none';
+    
+    // Ensure button text is "Upload & Buy"
+    if (uploadBuyBtn) {
+      uploadBuyBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        UPLOAD & BUY
+      `;
+    }
+    
+  } else {
+    // Both mode (legacy) - show both options
+    prescriptionTextSection.style.display = 'block';
+  }
   
   // Pre-fill if logged in
   const user = await MediCareData.getLoggedInUser();
