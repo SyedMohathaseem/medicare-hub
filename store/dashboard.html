@@ -278,6 +278,54 @@
     </div>
   </div>
 
+  <!-- Billing Modal (NEW) -->
+  <div class="modal-overlay" id="billingModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">💰 Billing Details</h3>
+        <button class="modal-close" onclick="closeBillingModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: var(--space-4); color: var(--gray-600);">Enter billing information to complete the order:</p>
+        
+        <input type="hidden" id="billingOrderId">
+        
+        <div class="form-group">
+          <label class="form-label">Total Amount (₹)</label>
+          <input type="number" class="form-input" id="totalAmount" placeholder="Enter total amount" min="0" step="0.01" oninput="calculateFinalBill()">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Discount Percentage (%)</label>
+          <input type="number" class="form-input" id="discountPercentage" placeholder="Enter discount %" min="0" max="100" step="0.1" value="0" oninput="calculateFinalBill()">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Final Bill Amount (₹)</label>
+          <input type="text" class="form-input" id="finalBillAmount" readonly style="background: var(--gray-100); font-weight: 700; font-size: 1.2rem; color: var(--success);">
+        </div>
+        
+        <div class="ai-message info" style="margin-top: var(--space-4);">
+          <div class="ai-message-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </div>
+          <div class="ai-message-content">
+            <p>Order will be marked as <strong>Completed</strong> after confirmation.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeBillingModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmBilling()">✓ Confirm & Complete</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>

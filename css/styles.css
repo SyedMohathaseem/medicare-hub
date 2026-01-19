@@ -1264,6 +1264,11 @@ td {
   color: var(--error);
 }
 
+.status-completed {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent);
+}
+
 /* Action Buttons in Table */
 .table-actions {
   display: flex;

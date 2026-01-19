@@ -100,10 +100,26 @@ function setupUpload() {
     });
   }
   
+  // Text-only button - skip image upload, show form directly
+  const textOnlyBtn = document.getElementById('textOnlyBtn');
+  if (textOnlyBtn) {
+    textOnlyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Hide upload card, show form fields directly
+      document.getElementById('uploadCard').style.display = 'none';
+      showAIMessage('info', 'Text-Only Prescription', 'Please type your prescription details below. You can also add an image later if needed.');
+      showOrderFormFields();
+    });
+  }
+  
   // Upload card click - opens file picker
   uploadCard.addEventListener('click', (e) => {
-    // Don't trigger if clicking the gallery button itself
+    // Don't trigger if clicking buttons
     if (e.target.closest('.gallery-upload-btn')) return;
+    if (e.target.closest('#textOnlyBtn')) return;
+    if (e.target.closest('.btn')) return;
     galleryInput.click();
   });
   
@@ -205,17 +221,23 @@ async function runAIVerification(file) {
   
   // Show note section and action buttons if verification passed
   if (aiVerificationPassed) {
-    document.getElementById('phoneSection').style.display = 'block';
-    document.getElementById('addressSection').style.display = 'block';
-    document.getElementById('noteSection').style.display = 'block';
-    document.getElementById('actionButtons').style.display = 'grid';
-    
-    // Pre-fill if logged in
-    const user = await MediCareData.getLoggedInUser();
-    if (user) {
-      if (user.phone) document.getElementById('orderPhone').value = user.phone;
-      if (user.address) document.getElementById('orderAddress').value = user.address;
-    }
+    showOrderFormFields();
+  }
+}
+
+// Show order form fields (used by both image upload and text-only paths)
+async function showOrderFormFields() {
+  document.getElementById('phoneSection').style.display = 'block';
+  document.getElementById('addressSection').style.display = 'block';
+  document.getElementById('noteSection').style.display = 'block';
+  document.getElementById('prescriptionTextSection').style.display = 'block';
+  document.getElementById('actionButtons').style.display = 'grid';
+  
+  // Pre-fill if logged in
+  const user = await MediCareData.getLoggedInUser();
+  if (user) {
+    if (user.phone) document.getElementById('orderPhone').value = user.phone;
+    if (user.address) document.getElementById('orderAddress').value = user.address;
   }
 }
 
@@ -271,13 +293,14 @@ function setupActionButtons() {
 }
 
 function submitOrder(orderType) {
-  if (!uploadedImageData) {
-    showAIMessage('error', 'No image uploaded', 'Please upload a prescription or medicine photo first.');
-    return;
-  }
+  const prescriptionText = document.getElementById('prescriptionText').value.trim();
   
-  if (!aiVerificationPassed) {
-    showAIMessage('error', 'Image verification failed', 'Please upload a clearer image before submitting.');
+  // Allow submission with image, text, or both - but at least one is required
+  const hasImage = uploadedImageData && aiVerificationPassed;
+  const hasText = prescriptionText.length > 0;
+  
+  if (!hasImage && !hasText) {
+    showAIMessage('error', 'No prescription provided', 'Please upload an image or enter prescription details.');
     return;
   }
   
@@ -308,6 +331,7 @@ async function processOrderSubmission(orderType) {
   const note = document.getElementById('orderNote').value.trim();
   const address = document.getElementById('orderAddress').value.trim();
   const phone = document.getElementById('orderPhone').value.trim();
+  const prescriptionText = document.getElementById('prescriptionText').value.trim();
   
   // Store guest phone for notification tracking
   sessionStorage.setItem('medicare_guest_phone', phone);
@@ -317,21 +341,24 @@ async function processOrderSubmission(orderType) {
   MediCareData.setLoggedInUser(user.id);
   
   try {
-    // Create order (Async)
+    // Create order (Async) - now includes prescriptionText
     const order = await MediCareData.createOrder(
       currentStore.id,
-      uploadedImageData,
+      uploadedImageData, // May be null for text-only orders
       note,
       address,
       phone,
-      orderType
+      orderType,
+      prescriptionText // New parameter
     );
     
-    // Update AI verification status (Async)
-    await MediCareData.updateOrderAIVerification(order.id, {
-      passed: true,
-      timestamp: new Date().toISOString()
-    });
+    // Update AI verification status (Async) - only if image was uploaded
+    if (uploadedImageData && aiVerificationPassed) {
+      await MediCareData.updateOrderAIVerification(order.id, {
+        passed: true,
+        timestamp: new Date().toISOString()
+      });
+    }
     
     // Simulate processing delay (or just wait a bit for UX)
     setTimeout(() => {

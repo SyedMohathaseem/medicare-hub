@@ -99,6 +99,11 @@
             Choose from Gallery
           </button>
         </div>
+        <div style="margin-top: 16px; border-top: 1px dashed var(--gray-300); padding-top: 16px;">
+          <button type="button" class="btn btn-secondary" id="textOnlyBtn" style="background: var(--gray-100); color: var(--gray-700); font-size: 14px; padding: 10px 20px;">
+            📝 No Image? Type Prescription
+          </button>
+        </div>
         <input type="file" id="galleryInput" accept="image/*" hidden>
       </div>
 
@@ -137,6 +142,15 @@
       <div class="form-group mt-4" id="noteSection" style="display: none;">
         <label class="form-label" for="orderNote">Add a note (optional)</label>
         <textarea class="form-textarea" id="orderNote" placeholder="E.g., Need 30 tablets, or any specific instructions..."></textarea>
+      </div>
+
+      <!-- Prescription Text Field -->
+      <div class="form-group mt-4" id="prescriptionTextSection" style="display: none;">
+        <label class="form-label" for="prescriptionText">Prescription Details (optional)</label>
+        <textarea class="form-textarea" id="prescriptionText" rows="4" placeholder="Type your prescription details here if you don't have an image...&#10;E.g., Paracetamol 500mg - 10 tablets&#10;Amoxicillin 250mg - 15 capsules"></textarea>
+        <p style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">
+          💡 You can submit with just an image, just text, or both together.
+        </p>
       </div>
 
       <!-- Action Buttons -->

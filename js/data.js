@@ -195,13 +195,14 @@ function generateOrderId() {
 }
 
 // Create Order (Async)
-async function createOrder(storeId, imageData, note, address, phone, orderType) {
+async function createOrder(storeId, imageData, note, address, phone, orderType, prescriptionText = '') {
   const newOrder = {
     id: generateOrderId(),
     storeId: parseInt(storeId),
     storeName: '', // Will fetch
     storeWhatsapp: '', // Will fetch
-    imageData: imageData,
+    imageData: imageData || null, // May be null for text-only orders
+    prescriptionText: prescriptionText || '', // New field for text-based prescription
     note: note || '',
     address: address || '',
     phone: phone || '',
@@ -210,7 +211,11 @@ async function createOrder(storeId, imageData, note, address, phone, orderType) 
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     aiVerification: null,
-    rejectionReason: null
+    rejectionReason: null,
+    // Billing fields (populated when order is accepted)
+    totalAmount: null,
+    discountPercentage: null,
+    finalBillAmount: null
   };
 
   // Get Store Details first (use sync local for reliability)
@@ -373,6 +378,59 @@ function updateLocalOrderAI(orderId, verification) {
   if (orderIndex !== -1) {
     orders[orderIndex].aiVerification = verification;
     localStorage.setItem('medicare_orders', JSON.stringify(orders));
+    return orders[orderIndex];
+  }
+  return null;
+}
+
+// Update Order Billing (Async) - Called when admin confirms billing
+async function updateOrderBilling(orderId, totalAmount, discountPercentage, finalBillAmount) {
+  const billingData = {
+    totalAmount: parseFloat(totalAmount),
+    discountPercentage: parseFloat(discountPercentage),
+    finalBillAmount: parseFloat(finalBillAmount),
+    status: 'completed',
+    updatedAt: new Date().toISOString()
+  };
+  
+  // ALWAYS update localStorage first for reliable sync
+  const result = updateLocalOrderBilling(orderId, billingData);
+  
+  // Also try Firestore if available
+  if (isFirestoreReady()) {
+    try {
+      const orderRef = db.collection('orders').doc(orderId);
+      await orderRef.update(billingData);
+      console.log('Order billing updated in Firestore:', orderId);
+    } catch (e) {
+      console.error("Firestore Billing Update Error:", e);
+      // Already updated localStorage above
+    }
+  }
+  
+  return result;
+}
+
+// Local helper for billing update
+function updateLocalOrderBilling(orderId, billingData) {
+  const orders = JSON.parse(localStorage.getItem('medicare_orders') || '[]');
+  const orderIndex = orders.findIndex(order => order.id === orderId);
+  
+  if (orderIndex !== -1) {
+    orders[orderIndex] = { ...orders[orderIndex], ...billingData };
+    localStorage.setItem('medicare_orders', JSON.stringify(orders));
+    
+    // Notify User about order completion
+    const order = orders[orderIndex];
+    if (order.phone) {
+      addNotification(
+        'user', 
+        order.phone, 
+        'Order Accepted & Billed ✅',
+        `Your order #${orderId} has been accepted. Total: ₹${billingData.finalBillAmount}. Payment: Cash on Delivery.`,
+        'success'
+      );
+    }
     return orders[orderIndex];
   }
   return null;
@@ -1267,6 +1325,7 @@ window.MediCareData = {
   getOrdersByStore,
   updateOrderStatus,
   updateOrderAIVerification,
+  updateOrderBilling,
   
   // Auth
   validateAdminLogin,

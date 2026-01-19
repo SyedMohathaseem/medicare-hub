@@ -110,8 +110,20 @@ function createOrderRow(order) {
   const statusClass = getStatusClass(order.status);
   const statusText = capitalizeFirst(order.status);
   const timeAgo = getTimeAgo(order.createdAt);
-  const aiHint = order.aiVerification ? '✓ Verified' : 'Pending';
+  const aiHint = order.aiVerification ? '✓ Verified' : (order.prescriptionText ? '📝 Text' : 'Pending');
   const orderType = order.orderType === 'urgent' ? '🚨 Urgent' : '📋 Request';
+  
+  // Handle image column - show placeholder for text-only orders
+  let imageHtml;
+  if (order.imageData) {
+    imageHtml = `<img src="${order.imageData}" alt="Order" class="order-image-thumb" onclick="viewImage('${order.id}')" style="cursor: pointer;">`;
+  } else {
+    imageHtml = `
+      <div onclick="viewImage('${order.id}')" style="cursor: pointer; width: 50px; height: 50px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px;" title="Text-only prescription">
+        📝
+      </div>
+    `;
+  }
   
   let actionsHtml = '';
   
@@ -120,7 +132,7 @@ function createOrderRow(order) {
       <button class="table-btn table-btn-accept" onclick="acceptOrder('${order.id}')">Accept</button>
       <button class="table-btn table-btn-reject" onclick="openRejectModal('${order.id}')">Reject</button>
     `;
-  } else if (order.status === 'accepted') {
+  } else if (order.status === 'accepted' || order.status === 'completed') {
     actionsHtml = `
       <button class="table-btn table-btn-accept" onclick="markDelivered('${order.id}')">Mark Delivered</button>
     `;
@@ -128,13 +140,20 @@ function createOrderRow(order) {
     actionsHtml = `<span style="color: var(--gray-400);">—</span>`;
   }
   
+  // Show billing info for completed orders
+  let billingInfo = '';
+  if (order.finalBillAmount) {
+    billingInfo = `<div style="font-size: 0.75em; color: var(--success); margin-top: 4px;">💰 ₹${order.finalBillAmount}</div>`;
+  }
+  
   return `
     <tr>
       <td>
         <strong style="color: var(--gray-900);">${order.id}</strong>
+        ${billingInfo}
       </td>
       <td>
-        <img src="${order.imageData}" alt="Order" class="order-image-thumb" onclick="viewImage('${order.id}')" style="cursor: pointer;">
+        ${imageHtml}
       </td>
       <td>${orderType}</td>
       <td>
@@ -144,7 +163,7 @@ function createOrderRow(order) {
         </div>
       </td>
       <td>
-        <span style="color: ${order.aiVerification ? 'var(--success)' : 'var(--warning)'};">
+        <span style="color: ${order.aiVerification ? 'var(--success)' : 'var(--primary)'};">
           ${aiHint}
         </span>
       </td>
@@ -191,10 +210,75 @@ function getTimeAgo(dateString) {
 }
 
 // Order Actions
+
+// Changed: Accept now opens billing modal instead of directly changing status
 async function acceptOrder(orderId) {
-  await MediCareData.updateOrderStatus(orderId, 'accepted');
-  loadOrders();
-  showToast('Order accepted successfully!', 'success');
+  openBillingModal(orderId);
+}
+
+// Billing Modal Functions
+function openBillingModal(orderId) {
+  document.getElementById('billingOrderId').value = orderId;
+  document.getElementById('totalAmount').value = '';
+  document.getElementById('discountPercentage').value = '0';
+  document.getElementById('finalBillAmount').value = '';
+  document.getElementById('billingModal').classList.add('active');
+  
+  // Focus on total amount field
+  setTimeout(() => {
+    document.getElementById('totalAmount').focus();
+  }, 100);
+}
+
+function closeBillingModal() {
+  document.getElementById('billingModal').classList.remove('active');
+}
+
+function calculateFinalBill() {
+  const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
+  const discountPercentage = parseFloat(document.getElementById('discountPercentage').value) || 0;
+  
+  // Validate inputs
+  if (totalAmount < 0 || discountPercentage < 0 || discountPercentage > 100) {
+    document.getElementById('finalBillAmount').value = 'Invalid';
+    return;
+  }
+  
+  // Calculate final bill: Total - (Total × Discount / 100)
+  const finalBill = totalAmount - (totalAmount * discountPercentage / 100);
+  document.getElementById('finalBillAmount').value = '₹ ' + finalBill.toFixed(2);
+}
+
+async function confirmBilling() {
+  const orderId = document.getElementById('billingOrderId').value;
+  const totalAmount = parseFloat(document.getElementById('totalAmount').value);
+  const discountPercentage = parseFloat(document.getElementById('discountPercentage').value) || 0;
+  
+  // Validation
+  if (!totalAmount || totalAmount <= 0) {
+    showToast('Please enter a valid total amount', 'error');
+    return;
+  }
+  
+  if (discountPercentage < 0 || discountPercentage > 100) {
+    showToast('Discount must be between 0 and 100%', 'error');
+    return;
+  }
+  
+  // Calculate final bill
+  const finalBillAmount = totalAmount - (totalAmount * discountPercentage / 100);
+  
+  try {
+    // Update order with billing info and set status to 'completed'
+    await MediCareData.updateOrderBilling(orderId, totalAmount, discountPercentage, finalBillAmount);
+    
+    closeBillingModal();
+    loadOrders();
+    showToast('Order completed successfully! ✓', 'success');
+  } catch (error) {
+    console.error('Billing update failed:', error);
+    showToast('Failed to complete order. Please try again.', 'error');
+  }
 }
 
 async function markDelivered(orderId) {
@@ -241,12 +325,52 @@ async function confirmReject() {
   showToast('Order rejected', 'warning');
 }
 
-// Image Modal
+// Image/Prescription Modal
 async function viewImage(orderId) {
   const order = await MediCareData.getOrderById(orderId);
   if (order) {
-    document.getElementById('modalImage').src = order.imageData;
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.querySelector('#imageModal .modal-title');
     
+    // Handle image display (may be null for text-only orders)
+    if (order.imageData) {
+      modalImage.src = order.imageData;
+      modalImage.style.display = 'block';
+    } else {
+      modalImage.style.display = 'none';
+    }
+    
+    // Update modal title based on content type
+    if (order.imageData && order.prescriptionText) {
+      modalTitle.textContent = 'Prescription Image & Text';
+    } else if (order.prescriptionText) {
+      modalTitle.textContent = 'Prescription Text';
+    } else {
+      modalTitle.textContent = 'Order Image';
+    }
+    
+    // Display prescription text if present
+    const prescriptionTextSection = document.getElementById('prescriptionTextDisplay');
+    if (order.prescriptionText) {
+      if (!prescriptionTextSection) {
+        // Create the section if it doesn't exist
+        const noteSection = document.getElementById('orderNote');
+        const prescDiv = document.createElement('div');
+        prescDiv.id = 'prescriptionTextDisplay';
+        prescDiv.className = 'mt-4';
+        prescDiv.innerHTML = `
+          <p style="color: var(--gray-500); font-size: var(--font-size-sm); margin-bottom: 8px;">📋 Prescription Details:</p>
+          <div id="prescriptionTextContent" style="background: var(--gray-100); padding: 12px; border-radius: 8px; white-space: pre-wrap; font-family: inherit; line-height: 1.5;"></div>
+        `;
+        noteSection.parentNode.insertBefore(prescDiv, noteSection.nextSibling);
+      }
+      document.getElementById('prescriptionTextDisplay').style.display = 'block';
+      document.getElementById('prescriptionTextContent').textContent = order.prescriptionText;
+    } else if (prescriptionTextSection) {
+      prescriptionTextSection.style.display = 'none';
+    }
+    
+    // Display note if present
     if (order.note) {
       document.getElementById('orderNote').style.display = 'block';
       document.getElementById('noteText').textContent = order.note;
@@ -516,3 +640,9 @@ window.closeRejectModal = closeRejectModal;
 window.confirmReject = confirmReject;
 window.viewImage = viewImage;
 window.closeImageModal = closeImageModal;
+
+// Billing Modal Exports
+window.openBillingModal = openBillingModal;
+window.closeBillingModal = closeBillingModal;
+window.calculateFinalBill = calculateFinalBill;
+window.confirmBilling = confirmBilling;
